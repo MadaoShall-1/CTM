@@ -1,0 +1,27 @@
+# Python caches and local environments
+**/__pycache__/
+**/.pytest_cache/
+**/*.py[cod]
+**/*.egg-info/
+.venv/
+venv/
+
+# Training/evaluation artifacts (large and reproducible)
+**/outputs/
+**/logdir/
+**/*.pt
+**/*.pth
+**/*.ckpt
+**/events.out.tfevents.*
+**/*.log
+**/*.pid
+
+# Editors and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Unrelated local scratch document
+/2026.08.29.docx
