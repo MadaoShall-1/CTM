@@ -199,3 +199,20 @@ def test_real_relay_boundary_transition_is_phase0_then_phase1() -> None:
     metrics = agent.update(buffer.sample(min(8, len(buffer))))
     assert np.isfinite(metrics["q_loss"])
     assert np.isfinite(metrics["parameter_actor_loss"])
+
+
+def test_phase0_hindsight_success_requires_catch_action() -> None:
+    env = RelayNavigationEnv(
+        map_size=200.0, goal_radius=5.0, relay_radius=5.0,
+        min_start_goal_distance=10.0, require_catch_action=True,
+    )
+    goal = np.asarray([50.0, 50.0], dtype=np.float32)
+    common = {
+        "is_her": True,
+        "her_source_phase": 0,
+        "her_achieved_goal_before": goal.copy(),
+    }
+    assert env.compute_reward(goal, goal, {**common, "her_source_action": MOVE}) == -1.0
+    assert env.compute_reward(goal, goal, {**common, "her_source_action": CATCH}) == 0.0
+    assert env.compute_reward(
+        goal, goal, {**common, "her_source_phase": 1, "her_source_action": MOVE}) == 0.0

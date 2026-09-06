@@ -130,8 +130,16 @@ class FutureGoalRelabeler:
                 next_observation = copy_goal_observation(source.next_observation)
                 observation["desired_goal"] = goal.copy()
                 next_observation["desired_goal"] = goal.copy()
+                relabel_info = {
+                    **source.info,
+                    "is_her": True,
+                    "her_source_action": int(source.action),
+                    "her_source_phase": int(source.phase),
+                    "her_achieved_goal_before": np.asarray(
+                        source.observation["achieved_goal"], dtype=np.float32).copy(),
+                }
                 reward_value = compute_reward(
-                    next_observation["achieved_goal"], goal, dict(source.info))
+                    next_observation["achieved_goal"], goal, relabel_info)
                 reward_array = np.asarray(reward_value, dtype=np.float32)
                 if reward_array.shape != ():
                     raise ValueError("compute_reward must return a scalar for one transition")
@@ -150,7 +158,7 @@ class FutureGoalRelabeler:
                     # goal was not achieved at this transition.
                     terminated=virtual_success,
                     truncated=source.truncated and not virtual_success,
-                    info={**source.info, "is_success": virtual_success, "is_her": True},
+                    info={**relabel_info, "is_success": virtual_success},
                     phase=source.phase,
                 )
                 relabeled.append(RelabeledTransition(

@@ -3,11 +3,45 @@ from pathlib import Path
 
 import pytest
 import torch
+import numpy as np
 
-from scripts.train import load_config, train, validate_config
+from scripts.train import (
+    load_config,
+    make_environment,
+    make_observation_encoder,
+    paper_update_count,
+    train,
+    validate_config,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_paper_observation_interfaces_do_not_leak_goal_or_phase() -> None:
+    plain = load_config(ROOT / "configs" / "relay_mpdqn.yaml")
+    her = load_config(ROOT / "configs" / "relay_her_mpdqn.yaml")
+    env = make_environment(plain)
+    obs, _ = env.reset(seed=3)
+    plain_encoder = make_observation_encoder(plain, env)
+    her_encoder = make_observation_encoder(her, env)
+    assert plain_encoder.output_dim == 7
+    assert her_encoder.output_dim == 9
+    changed = {key: value.copy() for key, value in obs.items()}
+    changed["desired_goal"] = np.asarray([0.0, 0.0], dtype=np.float32)
+    np.testing.assert_allclose(plain_encoder(obs), plain_encoder(changed))
+    assert not np.allclose(her_encoder(obs), her_encoder(changed))
+
+
+def test_paper_update_schedules_match_published_multiplier_semantics() -> None:
+    fixed = {"update_schedule": {"mode": "paper_fixed", "multiplier": 40}}
+    assert paper_update_count(fixed, episode_length=80, eligible_steps=80) == (3200, 40)
+    dynamic = {"update_schedule": {
+        "mode": "paper_dynamic", "reference_episode_length": 100,
+        "min_multiplier": 1, "max_multiplier": 10,
+    }}
+    assert paper_update_count(dynamic, episode_length=100, eligible_steps=100) == (100, 1)
+    assert paper_update_count(dynamic, episode_length=20, eligible_steps=20) == (100, 5)
 
 
 @pytest.mark.parametrize("algorithm", ["pdqn", "mpdqn", "her_pdqn", "her_mpdqn"])
@@ -76,6 +110,33 @@ def test_training_stops_at_exact_environment_step_budget(tmp_path) -> None:
     assert records[-1]["environment_steps"] == 7
     assert records[-1]["length"] == 3
     assert records[-1]["truncated"] == 1.0
+
+
+def test_periodic_deterministic_validation_writes_best_eval_checkpoint(tmp_path) -> None:
+    config = load_config(ROOT / "configs" / "direct_mpdqn.yaml")
+    output = tmp_path / "validated"
+    train(config, overrides={
+        "experiment": {"output_dir": str(output)},
+        "env": {"max_episode_steps": 2},
+        "agent": {"hidden_sizes": [8], "device": "cpu"},
+        "replay": {"capacity": 32},
+        "training": {
+            "episodes": 2,
+            "learning_starts": 10,
+            "batch_size": 4,
+            "update_schedule": None,
+            "checkpoint_every": 0,
+            "validation_every": 1,
+            "validation_episodes": 2,
+            "validation_seed": 91,
+        },
+    })
+    assert (output / "best_eval.pt").exists()
+    records = [
+        json.loads(line)
+        for line in (output / "metrics.jsonl").read_text().splitlines()
+    ]
+    assert all("validation_success_rate" in record for record in records)
 
 
 @pytest.mark.parametrize("num_relays", [0, 1, 2, 4, 8])

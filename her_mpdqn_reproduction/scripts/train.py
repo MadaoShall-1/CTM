@@ -35,7 +35,7 @@ from replay import (  # noqa: E402
 
 ALGORITHMS = ("pdqn", "mpdqn", "her_pdqn", "her_mpdqn")
 ENVIRONMENTS = ("direct", "relay", "multi_relay")
-TRAINING_CHECKPOINT_VERSION = 1
+TRAINING_CHECKPOINT_VERSION = 2
 
 
 def load_config(path: str | Path) -> dict[str, Any]:
@@ -81,6 +81,17 @@ def validate_config(config: Mapping[str, Any]) -> None:
     max_steps = config["training"].get("max_environment_steps")
     if max_steps is not None and int(max_steps) <= 0:
         raise ValueError("training.max_environment_steps must be positive when set")
+    schedule = config["training"].get("update_schedule")
+    if schedule is not None:
+        if not isinstance(schedule, Mapping):
+            raise ValueError("training.update_schedule must be a mapping")
+        mode = str(schedule.get("mode"))
+        if mode not in ("paper_fixed", "paper_dynamic"):
+            raise ValueError("Unknown training.update_schedule mode")
+    for name in ("validation_every", "validation_episodes"):
+        value = int(config["training"].get(name, 0))
+        if value < 0:
+            raise ValueError(f"training.{name} cannot be negative")
 
 
 def resolve_device(name: str) -> str:
@@ -108,6 +119,25 @@ def parameter_sizes_for_environment(env) -> tuple[int, ...]:
     if env.action_space[0].n == 3:
         return (1, 1, 0)
     raise ValueError(f"Unsupported number of hybrid actions: {env.action_space[0].n}")
+
+
+def make_observation_encoder(
+    config: Mapping[str, Any], env,
+) -> GoalObservationEncoder:
+    """Build the paper-facing input while preserving richer environment data.
+
+    Only HER variants receive the explicit goal. Relay phase remains available
+    through the environment/recorder API but is excluded from all paper
+    baseline network inputs because it is not part of the published state.
+    """
+    algorithm = str(config["experiment"]["algorithm"])
+    environment = str(config["experiment"]["environment"])
+    excluded = (-1,) if environment in ("relay", "multi_relay") else ()
+    return GoalObservationEncoder(
+        env.observation_space,
+        include_goal=algorithm.startswith("her_"),
+        excluded_state_indices=excluded,
+    )
 
 
 def make_agent(config: Mapping[str, Any], state_dim: int, parameter_sizes: tuple[int, ...]):
@@ -161,6 +191,38 @@ def linear_schedule(start: float, end: float, duration: int, step: int) -> float
     return float(start + fraction * (end - start))
 
 
+def paper_update_count(
+    training: Mapping[str, Any], *, episode_length: int, eligible_steps: int,
+) -> tuple[int, int]:
+    """Return optimizer updates and the paper's per-step multiplier U.
+
+    Configurations without ``update_schedule`` retain the original interval
+    behavior for small tests and third-party configs.
+    """
+    schedule = training.get("update_schedule")
+    if not schedule:
+        update_every = int(training.get("update_every", 1))
+        if update_every <= 0:
+            raise ValueError("training.update_every must be positive")
+        events = eligible_steps // update_every
+        return events * int(training.get("gradient_steps", 1)), 0
+    mode = str(schedule.get("mode"))
+    if mode == "paper_fixed":
+        multiplier = int(schedule.get("multiplier", 1))
+    elif mode == "paper_dynamic":
+        reference = float(schedule.get("reference_episode_length", 100))
+        minimum = int(schedule.get("min_multiplier", 1))
+        maximum = int(schedule.get("max_multiplier", 10))
+        if reference <= 0 or minimum <= 0 or maximum < minimum:
+            raise ValueError("Invalid paper_dynamic update schedule")
+        multiplier = int(np.clip(round(reference / max(1, episode_length)), minimum, maximum))
+    else:
+        raise ValueError(f"Unknown training.update_schedule mode: {mode!r}")
+    if multiplier <= 0:
+        raise ValueError("Paper update multiplier must be positive")
+    return eligible_steps * multiplier, multiplier
+
+
 def random_selection(agent) -> ActionSelection:
     parameters = agent.rng.uniform(
         -1.0, 1.0, size=agent.spec.total_parameter_dim).astype(np.float32)
@@ -171,6 +233,46 @@ def random_selection(agent) -> ActionSelection:
         all_parameters=parameters,
         q_values=np.zeros(agent.spec.num_actions, dtype=np.float32),
     )
+
+
+def deterministic_validation(
+    config: Mapping[str, Any], agent, encoder: GoalObservationEncoder,
+    *, episodes: int, seed: int,
+) -> dict[str, float]:
+    """Evaluate without perturbing the training environment or exploration RNG."""
+    validation_env = make_environment(config)
+    rng_state = copy.deepcopy(agent.rng.bit_generator.state)
+    successes: list[float] = []
+    returns: list[float] = []
+    relay_reached: list[float] = []
+    try:
+        obs, _ = validation_env.reset(seed=seed)
+        for episode in range(episodes):
+            if episode:
+                obs, _ = validation_env.reset()
+            episode_return = 0.0
+            reached = False
+            while True:
+                source_phase = validation_env.current_phase
+                selection = agent.select_action(
+                    encoder(obs), epsilon=0.0, parameter_noise_std=0.0)
+                obs, reward, terminated, truncated, info = validation_env.step(
+                    selection.environment_action())
+                episode_return += reward
+                reached = reached or validation_env.current_phase > source_phase
+                if terminated or truncated:
+                    break
+            successes.append(float(bool(info.get("is_success", False))))
+            returns.append(float(episode_return))
+            relay_reached.append(float(reached or validation_env.current_phase > 0))
+    finally:
+        agent.rng.bit_generator.state = rng_state
+        validation_env.close()
+    return {
+        "validation_success_rate": float(np.mean(successes)),
+        "validation_mean_return": float(np.mean(returns)),
+        "validation_relay_reached_rate": float(np.mean(relay_reached)),
+    }
 
 
 def append_jsonl(path: Path, record: Mapping[str, Any]) -> None:
@@ -267,7 +369,7 @@ def train(
     torch.manual_seed(seed)
     env = make_environment(config)
     obs, _ = env.reset(seed=seed)
-    encoder = GoalObservationEncoder(env.observation_space)
+    encoder = make_observation_encoder(config, env)
     parameter_sizes = parameter_sizes_for_environment(env)
     agent = make_agent(config, encoder.output_dim, parameter_sizes)
     replay = make_replay(
@@ -296,6 +398,8 @@ def train(
     success_window: deque[float] = deque(maxlen=100)
     last_losses: dict[str, float] = {}
     best_success_rate = -1.0
+    best_validation_success = -1.0
+    best_validation_return = -float("inf")
 
     if resume_from is None:
         metrics_path.write_text("", encoding="utf-8")
@@ -315,6 +419,8 @@ def train(
         success_window.extend(float(value) for value in restored["success_window"])
         last_losses = dict(restored["last_losses"])
         best_success_rate = float(restored["best_success_rate"])
+        best_validation_success = float(restored.get("best_validation_success", -1.0))
+        best_validation_return = float(restored.get("best_validation_return", -float("inf")))
         start_episode = completed_episodes + 1
         reset_before_first_episode = True
         source_metrics = resume_path.parent / "metrics.jsonl"
@@ -340,6 +446,8 @@ def train(
             "success_window": list(success_window),
             "last_losses": dict(last_losses),
             "best_success_rate": best_success_rate,
+            "best_validation_success": best_validation_success,
+            "best_validation_return": best_validation_return,
         }
 
     def save_full_checkpoint(path: Path) -> None:
@@ -435,13 +543,23 @@ def train(
             total_steps - max(steps_before_episode, int(training["learning_starts"])),
         )
         update_credit += eligible_steps
-        update_every = int(training.get("update_every", 1))
-        if update_every <= 0:
-            raise ValueError("training.update_every must be positive")
+        update_multiplier = 0
         if replay_size >= int(training["batch_size"]):
-            update_events = update_credit // update_every
-            update_credit %= update_every
-            updates = update_events * int(training.get("gradient_steps", 1))
+            if training.get("update_schedule"):
+                updates, update_multiplier = paper_update_count(
+                    training,
+                    episode_length=len(episode_transitions),
+                    eligible_steps=update_credit,
+                )
+                update_credit = 0
+            else:
+                update_every = int(training.get("update_every", 1))
+                updates, update_multiplier = paper_update_count(
+                    training,
+                    episode_length=len(episode_transitions),
+                    eligible_steps=update_credit,
+                )
+                update_credit %= update_every
             for _ in range(updates):
                 batch = replay.sample(int(training["batch_size"]), device=agent.device)
                 losses = agent.update(batch)
@@ -471,17 +589,41 @@ def train(
             "epsilon": epsilon,
             "parameter_noise_std": noise,
             "replay_size": replay_size,
+            "update_multiplier": update_multiplier,
             **her_counts,
         }
         if episode_losses:
             for name in ("q_loss", "parameter_actor_loss", "mean_q", "mean_target_q"):
                 record[name] = float(np.mean([loss[name] for loss in episode_losses]))
-        append_jsonl(metrics_path, record)
-
         current_rate = float(np.mean(success_window))
         if current_rate > best_success_rate:
             best_success_rate = current_rate
             save_full_checkpoint(output_dir / "best.pt")
+        validation_every = int(training.get("validation_every", 0))
+        validation_episodes = int(training.get("validation_episodes", 0))
+        if (
+            validation_every > 0
+            and validation_episodes > 0
+            and episode_index % validation_every == 0
+        ):
+            validation = deterministic_validation(
+                config,
+                agent,
+                encoder,
+                episodes=validation_episodes,
+                seed=int(training.get("validation_seed", 100_000 + seed)),
+            )
+            record.update(validation)
+            score = validation["validation_success_rate"]
+            mean_return = validation["validation_mean_return"]
+            if (
+                score > best_validation_success
+                or (score == best_validation_success and mean_return > best_validation_return)
+            ):
+                best_validation_success = score
+                best_validation_return = mean_return
+                save_full_checkpoint(output_dir / "best_eval.pt")
+        append_jsonl(metrics_path, record)
         checkpoint_every = int(training.get("checkpoint_every", 100))
         if checkpoint_every > 0 and episode_index % checkpoint_every == 0:
             save_full_checkpoint(output_dir / f"checkpoint_{episode_index}.pt")

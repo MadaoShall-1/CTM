@@ -1,5 +1,12 @@
 # Bounded reproduction results
 
+> **Paper-fidelity v2 warning (2026-09-05):** all tables on this page predate
+> the algorithm-specific observation interfaces and CATCH-consistent relay HER.
+> They are diagnostic history, not final reproduction evidence. In particular,
+> the old P-DQN/MP-DQN runs received `desired_goal` and explicit phase values
+> that the published non-HER baselines do not receive. New v2 full results have
+> not yet been generated.
+
 > **Historical warning:** the original 5,000-step tables below used terminal
 > out-of-bounds handling with reward `-1`. That allowed an agent to improve
 > return by crashing early instead of accumulating `-1` for 100 steps. Those

@@ -30,10 +30,19 @@ reproduction evidence, not a claim of exact numerical recovery of deleted code.
 - **Ordinary HER:** configurable unique future-goal sampling, desired-goal
   replacement, vectorized environment reward reuse, and relabel counters.
 - **Phase-aware HER:** paper-GSM reconstruction that admits future goals only
-  from the source phase and reports every rejected cross-phase candidate.
+  from the source phase, requires CATCH-consistent virtual pickup success, and
+  reports every rejected cross-phase candidate.
+- **Paper-facing inputs:** P-DQN/MP-DQN consume only the published state;
+  HER variants consume `(state, goal)`. The environment still exposes phase to
+  trajectory recorders, but phase is not leaked into baseline networks.
 
 The complete state/action equations, assumptions, source-to-code decisions,
 file plan, and Stage 3-7 boundaries are in [RECONSTRUCTION_SPEC.md](RECONSTRUCTION_SPEC.md).
+
+For the previous full-run analysis, current v2 pilot results, and confirmed
+environment/HER issues, see [EXPERIMENT_ANALYSIS_AND_SCENARIO_ISSUES.md](../EXPERIMENT_ANALYSIS_AND_SCENARIO_ISSUES.md)
+(Chinese, 2026-09-06). These issues remain open; successful execution alone
+does not establish benchmark correctness.
 
 ## Install and test
 
@@ -64,7 +73,10 @@ python scripts/train.py --config configs/direct_her_mpdqn.yaml
 python scripts/run_smoke_baselines.py --environment both --episodes 3
 python scripts/run_direct_pilot.py --steps 5000 --eval-episodes 30
 python scripts/run_all_baselines.py --environments direct,relay \
-  --seeds 0,1,2 --steps 5000 --eval-episodes 30
+  --seeds 0,1,2 --steps 5000 --eval-episodes 30 --workers 8
+# Paper episode budgets and 1000-episode evaluation (no --steps cap):
+python scripts/run_all_baselines.py --environments direct,relay \
+  --seeds 0,1,2 --eval-episodes 1000 --workers 8 --worker-threads 1
 python scripts/plot_results.py \
   --input-root outputs/reproduction_3seed_5000
 python scripts/run_horizon_experiments.py \
@@ -76,7 +88,8 @@ python scripts/evaluate.py \
 
 Each episode appends return, success, length, environment steps, replay size,
 Q loss, parameter-actor loss, HER relabel count, boundary-hit rate, and cross-phase filter count
-to `metrics.jsonl`. Resolved YAML plus `best.pt` and `last.pt` are written to
+to `metrics.jsonl`. Resolved YAML plus `best.pt`, deterministic-validation
+`best_eval.pt`, and `last.pt` are written to
 the configured output directory. Evaluation writes deterministic per-episode
 and aggregate metrics and can export complete CT-WM-ready `.npz` trajectories.
 `run_all_baselines.py` writes per-run records plus JSON/CSV mean and population
@@ -110,6 +123,25 @@ skipped and incomplete runs resume from their highest periodic checkpoint.
 Because replay storage is included, full checkpoints are substantially larger
 than inference-only model files; adjust `checkpoint_every` according to disk
 budget for long multi-seed runs.
+
+`--workers N` runs N complete experiments in independent spawned processes.
+Networks, replay buffers, optimizers, RNG streams, checkpoints, and output
+directories remain isolated, so concurrency changes scheduling but not the
+per-run update-to-data ratio. These small MLPs benchmark faster on this
+workstation's CPU than its GPU; the paper configs therefore use CPU and the
+runner defaults to at most eight one-thread workers. `--worker-threads` can be
+tuned for other hardware.
+
+## Paper update schedule
+
+The direct configs implement the published `episode_length * U` optimizer
+updates with `U=40`. The paper says relay `U` varies with episode length and is
+clipped to `[1, 10]`, but does not publish the function. This reproduction uses
+the explicit assumption `U=clip(round(100 / episode_length), 1, 10)`, which
+keeps approximately 100 optimizer updates per complete relay episode. Legacy
+configs without `update_schedule` retain interval/gradient-step behavior for
+tests and ablations. Gradient accumulation is not substituted for paper
+updates because it changes Adam and target-network update semantics.
 
 ## Long-horizon extension
 

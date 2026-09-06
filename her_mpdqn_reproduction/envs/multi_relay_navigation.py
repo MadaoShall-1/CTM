@@ -162,6 +162,22 @@ class MultiRelayNavigationEnv(DirectNavigationEnv):
             "goal_radius": self.goal_radius,
         }
 
+    def compute_reward(self, achieved_goal, desired_goal, info):
+        """Use CATCH-consistent virtual success for unfinished relay stages."""
+        if not isinstance(info, dict) or not info.get("is_her", False):
+            return super().compute_reward(achieved_goal, desired_goal, info)
+        source_phase = int(info.get("her_source_phase", info.get("phase", 0)))
+        if source_phase >= self.num_relays or not self.require_catch_action:
+            return super().compute_reward(achieved_goal, desired_goal, info)
+        before = np.asarray(
+            info.get("her_achieved_goal_before", achieved_goal), dtype=np.float32)
+        success = (
+            int(info.get("her_source_action", -1)) == CATCH
+            and distance(before, desired_goal) <= self.relay_radius
+        )
+        rewards = np.where(success, 0.0, -1.0)
+        return float(rewards) if np.ndim(rewards) == 0 else rewards.astype(np.float32)
+
     def step(self, action):
         discrete_action, parameter = action
         if not self.action_space.spaces[0].contains(discrete_action):

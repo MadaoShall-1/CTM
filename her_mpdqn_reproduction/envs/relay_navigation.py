@@ -163,6 +163,31 @@ class RelayNavigationEnv(DirectNavigationEnv):
             "goal_radius": self.goal_radius,
         }
 
+    def compute_reward(
+        self,
+        achieved_goal: np.ndarray,
+        desired_goal: np.ndarray,
+        info: dict[str, Any] | list[dict[str, Any]] | None,
+    ) -> float | np.ndarray:
+        """Recompute real/HER rewards with stage-event consistency.
+
+        During phase 0, reaching a spatial goal is not enough when CATCH is
+        required: the relabelled transition must itself execute CATCH near the
+        relabelled goal.  Phase 1 remains an ordinary spatial delivery goal.
+        This prevents HER from labelling MOVE/TURN as successful pickup events.
+        """
+        if not isinstance(info, dict) or not info.get("is_her", False):
+            return super().compute_reward(achieved_goal, desired_goal, info)
+        source_phase = int(info.get("her_source_phase", info.get("phase", 0)))
+        if source_phase > 0 or not self.require_catch_action:
+            return super().compute_reward(achieved_goal, desired_goal, info)
+        before = np.asarray(
+            info.get("her_achieved_goal_before", achieved_goal), dtype=np.float32)
+        action = int(info.get("her_source_action", -1))
+        success = action == CATCH and distance(before, desired_goal) <= self.relay_radius
+        rewards = np.where(success, 0.0, -1.0)
+        return float(rewards) if np.ndim(rewards) == 0 else rewards.astype(np.float32)
+
     def step(
         self, action: tuple[int, np.ndarray]
     ) -> tuple[dict[str, np.ndarray], float, bool, bool, dict[str, Any]]:

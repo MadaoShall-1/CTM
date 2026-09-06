@@ -16,12 +16,12 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from envs.wrappers import GoalObservationEncoder  # noqa: E402
 from scripts.train import (  # noqa: E402
     append_jsonl,
     load_config,
     make_agent,
     make_environment,
+    make_observation_encoder,
     parameter_sizes_for_environment,
     validate_config,
 )
@@ -72,7 +72,7 @@ def evaluate_checkpoint(
         raise FileNotFoundError(checkpoint)
     env = make_environment(config)
     obs, _ = env.reset(seed=seed)
-    encoder = GoalObservationEncoder(env.observation_space)
+    encoder = make_observation_encoder(config, env)
     parameter_sizes = parameter_sizes_for_environment(env)
     agent = make_agent(config, encoder.output_dim, parameter_sizes)
     agent.load(checkpoint)

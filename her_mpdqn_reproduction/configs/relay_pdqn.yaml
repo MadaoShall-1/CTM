@@ -18,7 +18,7 @@ agent:
   q_learning_rate: 0.001
   parameter_learning_rate: 0.00001
   gradient_clip_norm: 10.0
-  device: auto
+  device: cpu
 replay:
   capacity: 150000
   her_k: 0
@@ -27,9 +27,14 @@ training:
   episodes: 30000
   learning_starts: 2000
   batch_size: 128
-  update_every: 1
-  gradient_steps: 1
-  checkpoint_every: 500
+  update_schedule:
+    mode: paper_dynamic
+    reference_episode_length: 100
+    min_multiplier: 1
+    max_multiplier: 10
+  checkpoint_every: 2000
+  validation_every: 2000
+  validation_episodes: 100
 exploration:
   epsilon_start: 1.0
   epsilon_end: 0.05

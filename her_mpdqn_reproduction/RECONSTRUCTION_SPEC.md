@@ -70,6 +70,12 @@ For phase 0 the active desired goal is the relay/supply point; for phase 1 it
 is the final target.  The environment exposes `current_phase`, `num_phases`,
 and `current_goal`.
 
+The rich environment observation is not identical to every baseline's neural
+input. P-DQN and MP-DQN receive only the six-value direct or seven-value relay
+paper state. HER-PDQN and HER-MPDQN additionally receive `desired_goal` as
+specified by equations (16)-(17). The explicit phase coordinate is recorded
+for CT-WM but excluded from all four paper baseline encoders.
+
 Raw observations are intentional.  Neural baselines will use a separate
 normalizing wrapper so environment physics, stored trajectories, and reward
 relabeling retain interpretable units.
@@ -118,8 +124,10 @@ wind, obstacles, and energy are omitted as in the paper abstraction.
   an agent from improving return by deliberately terminating early. The legacy
   `boundary_mode="terminate"` remains available only for ablation.
 - Reaching the step limit truncates, rather than terminates, the episode.
-- `compute_reward` is a vectorized positional sparse-reward function for HER.
-  Phase-aware relabeling will constrain which calls are valid in Stage 4/5.
+- `compute_reward` is vectorized for HER. Direct and final-delivery goals are
+  positional. A phase-0 virtual pickup success additionally requires that the
+  source transition execute CATCH near the relabelled goal, preventing
+  MOVE/TURN from being stored as successful pickup events.
 
 ## Direct Navigation
 
@@ -149,9 +157,11 @@ on contact; the setting must be reported with results.
 | Ends at success/time limit; text also discusses out-of-bounds endings | Default to boundary clipping; retain termination as an ablation | A `-1` terminal boundary transition otherwise rewards deliberate early crashing relative to a `-100` timeout |
 | Target/supply contact areas | Both radii default to 100 m | Exact radii are not reported |
 | Relay adds CATCH with no parameter | Fixed dummy parameter slot; valid CATCH at contact changes phase | Fixed-size batched agent interface |
-| Relay state has seven values but pickup state affects transitions | Add explicit phase as eighth value | Restores Markov property and CT-WM observability |
-| GSM changes goals before/after pickup | Future HER samples will be filtered to the same phase | Prevent logically invalid cross-stage relabels |
-| Seven runs and reported training hyperparameters | Later configs will preserve paper settings and add cheaper smoke configs | Full relay training is 30,000 episodes per run |
+| Relay state has seven values but pickup state affects transitions | Expose phase as an eighth environment value, but exclude it from paper baseline encoders | Restores CT-WM observability without leaking extra information to baselines |
+| GSM changes goals before/after pickup | Future HER samples are filtered to the same phase; virtual relay completion requires CATCH | Prevent invalid cross-stage goals and action-inconsistent pickup labels |
+| Direct update multiplier `U=40` | Execute `episode_length * 40` updates | Matches Algorithm 1 and the direct-task parameters |
+| Relay `U` varies with episode length and is limited to `[1,10]` | `U=clip(round(100/episode_length),1,10)` | The paper omits the function; inverse scaling keeps about 100 updates per episode |
+| Seven runs and reported training hyperparameters | Paper configs preserve published budgets; smoke runs use explicit CLI step caps | Full relay training is 30,000 episodes per run |
 | No multi-relay task is defined | Generalize the relay into N ordered CATCH stages followed by one final goal | CT-WM long-horizon extension; results must be reported separately from paper reproduction |
 
 The paper's displayed action-space equation appears to repeat `c2` for both
