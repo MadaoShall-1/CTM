@@ -1,0 +1,62 @@
+{
+  "status": "completed",
+  "pid": 4416,
+  "started_at": "2026-09-09T22:26:41.061475+00:00",
+  "source_sha256": {
+    "dreamer.py": "ea9976532a067d8bf39a250dd5832ab07bf650d78345fe126418270902a95ee5",
+    "envs.py": "f6e8800e1b0538f6e9f1fc57424f242344fd366f3e03747727cec979df8edb52",
+    "models.py": "37465fce59c0a69f341e14e80752b44dd842238fb1e48c7cb4bc024e618151b9",
+    "tools.py": "9cfae3e940a3bff4339e73f9d73a3e9d02c6bb7d6ddd43600ad217557cc82c03",
+    "wrappers.py": "20b0df3e4519ac6a178f8cc7b4c00b300d1f3cc10f400e0cd5b390c426bc04f7",
+    "uav_actions.py": "c76586a52ca8200e3d09b63e308abcd4983c18d6852e0794b84f50f113a34ce9",
+    "run_wsl.sh": "c434aed9a6572f4f31e5a22602fcd1dbb6c1b76177dd84ef100363ac421b391f",
+    "gpu_check.py": "778775bc0de3c2d6172da549965b2387c88069599e1136bcf5308248d2b174e9",
+    "requirements.txt": "4b64c53221baa1cf6b856faa494bcb7014d32f50ac2b3e83bf3318d59ac815d8"
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "status": "completed",
+      "outdir": "/mnt/e/CTM/Dreamer V2/ctm_qiwei/Dreamer-master/outputs/v2_corrected_validation_20260910/seed_0",
+      "command": [
+        "bash",
+        "run_wsl.sh",
+        "-u",
+        "dreamer.py",
+        "--task",
+        "uav_relay",
+        "--reward_mode",
+        "goal_safe_v1",
+        "--shaping_scale",
+        "1.0",
+        "--discount",
+        ".99",
+        "--seed",
+        "0",
+        "--steps",
+        "20000",
+        "--prefill",
+        "5000",
+        "--eval_every",
+        "2000",
+        "--eval_episodes",
+        "10",
+        "--log_every",
+        "500",
+        "--logdir",
+        "/mnt/e/CTM/Dreamer V2/ctm_qiwei/Dreamer-master/outputs/v2_corrected_validation_20260910/seed_0"
+      ],
+      "pid": 4417,
+      "exit_code": 0,
+      "final_evaluation": {
+        "test/success": 0.0,
+        "test/pickup": 0.0,
+        "test/out_of_bounds": 0.0,
+        "test/return": -1.5098137378692627,
+        "test/discounted_return": -0.7587003766584239
+      },
+      "final_step": 20044
+    }
+  ],
+  "finished_at": "2026-09-09T22:47:01.998972+00:00"
+}

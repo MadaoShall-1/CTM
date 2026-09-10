@@ -1,0 +1,1723 @@
+{
+  "run": "/mnt/e/CTM/Dreamer V2/ctm_qiwei/Dreamer-master/outputs/v2_corrected_validation_20260910/seed_0",
+  "checkpoint_step": 20044,
+  "seed_start": 10000,
+  "episodes": 100,
+  "policy": "mode_action_with_seeded_stochastic_RSSM",
+  "runtime_devices": [
+    "PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')"
+  ],
+  "success_rate": 0.0,
+  "pickup_rate": 0.0,
+  "out_of_bounds_rate": 0.04,
+  "timeout_rate": 0.96,
+  "mean_length": 97.03,
+  "action_fractions": [
+    0.09687725445738432,
+    0.564258476759765,
+    0.33886426878285064
+  ],
+  "parameter_saturation": 0.7395167575993764,
+  "records": [
+    {
+      "seed": 10000,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4167295765794274,
+      "discounted_return": -0.7119244103414195,
+      "action_counts": [
+        2,
+        0,
+        98
+      ],
+      "parameter_count": 2,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10001,
+      "length": 37,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": true,
+      "timeout": false,
+      "episode_return": -1.098770910891844,
+      "discounted_return": -0.8079280420939676,
+      "action_counts": [
+        20,
+        1,
+        16
+      ],
+      "parameter_count": 21,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10002,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2576497729043594,
+      "discounted_return": -0.6319848105047032,
+      "action_counts": [
+        1,
+        18,
+        81
+      ],
+      "parameter_count": 19,
+      "saturated_parameter_count": 18
+    },
+    {
+      "seed": 10003,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3419568380163513,
+      "discounted_return": -0.6743501698574625,
+      "action_counts": [
+        13,
+        3,
+        84
+      ],
+      "parameter_count": 16,
+      "saturated_parameter_count": 15
+    },
+    {
+      "seed": 10004,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.649160987777251,
+      "discounted_return": -0.828724114460929,
+      "action_counts": [
+        1,
+        3,
+        96
+      ],
+      "parameter_count": 4,
+      "saturated_parameter_count": 3
+    },
+    {
+      "seed": 10005,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2269438521229228,
+      "discounted_return": -0.6165546995592572,
+      "action_counts": [
+        6,
+        1,
+        93
+      ],
+      "parameter_count": 7,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10006,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5018194420006687,
+      "discounted_return": -0.7546831366837528,
+      "action_counts": [
+        50,
+        35,
+        15
+      ],
+      "parameter_count": 85,
+      "saturated_parameter_count": 14
+    },
+    {
+      "seed": 10007,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7040996968854878,
+      "discounted_return": -0.8563315059726064,
+      "action_counts": [
+        0,
+        49,
+        51
+      ],
+      "parameter_count": 49,
+      "saturated_parameter_count": 49
+    },
+    {
+      "seed": 10008,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.459427749890383,
+      "discounted_return": -0.7333807788393878,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 50
+    },
+    {
+      "seed": 10009,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.8456229630965622,
+      "discounted_return": -0.9274487251741524,
+      "action_counts": [
+        7,
+        89,
+        4
+      ],
+      "parameter_count": 96,
+      "saturated_parameter_count": 95
+    },
+    {
+      "seed": 10010,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4157990323202172,
+      "discounted_return": -0.711456800160913,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10011,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2009931995210092,
+      "discounted_return": -0.6035141706135722,
+      "action_counts": [
+        0,
+        2,
+        98
+      ],
+      "parameter_count": 2,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10012,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1028613287061488,
+      "discounted_return": -0.5542016727166578,
+      "action_counts": [
+        1,
+        43,
+        56
+      ],
+      "parameter_count": 44,
+      "saturated_parameter_count": 43
+    },
+    {
+      "seed": 10013,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.413131052704598,
+      "discounted_return": -0.7101161068867317,
+      "action_counts": [
+        32,
+        8,
+        60
+      ],
+      "parameter_count": 40,
+      "saturated_parameter_count": 17
+    },
+    {
+      "seed": 10014,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5854099242633364,
+      "discounted_return": -0.7966884041524288,
+      "action_counts": [
+        8,
+        9,
+        83
+      ],
+      "parameter_count": 17,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10015,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7517151285271804,
+      "discounted_return": -0.8802588585563726,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10016,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5769471117314406,
+      "discounted_return": -0.7924357345384128,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10017,
+      "length": 28,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": true,
+      "timeout": false,
+      "episode_return": -0.8682101038014506,
+      "discounted_return": -0.6838841349550087,
+      "action_counts": [
+        16,
+        5,
+        7
+      ],
+      "parameter_count": 21,
+      "saturated_parameter_count": 8
+    },
+    {
+      "seed": 10018,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3388177568157575,
+      "discounted_return": -0.6727727421184705,
+      "action_counts": [
+        5,
+        91,
+        4
+      ],
+      "parameter_count": 96,
+      "saturated_parameter_count": 96
+    },
+    {
+      "seed": 10019,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2611256957104025,
+      "discounted_return": -0.6337315053821121,
+      "action_counts": [
+        23,
+        75,
+        2
+      ],
+      "parameter_count": 98,
+      "saturated_parameter_count": 77
+    },
+    {
+      "seed": 10020,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3292374387625732,
+      "discounted_return": -0.6679585119409912,
+      "action_counts": [
+        40,
+        45,
+        15
+      ],
+      "parameter_count": 85,
+      "saturated_parameter_count": 49
+    },
+    {
+      "seed": 10021,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2953864033479077,
+      "discounted_return": -0.6509479413808582,
+      "action_counts": [
+        0,
+        84,
+        16
+      ],
+      "parameter_count": 84,
+      "saturated_parameter_count": 84
+    },
+    {
+      "seed": 10022,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4226114219004744,
+      "discounted_return": -0.7148801115077756,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10023,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.8787140329194347,
+      "discounted_return": -0.9440774034771015,
+      "action_counts": [
+        2,
+        12,
+        86
+      ],
+      "parameter_count": 14,
+      "saturated_parameter_count": 12
+    },
+    {
+      "seed": 10024,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1343809040412833,
+      "discounted_return": -0.5700406552971267,
+      "action_counts": [
+        16,
+        32,
+        52
+      ],
+      "parameter_count": 48,
+      "saturated_parameter_count": 45
+    },
+    {
+      "seed": 10025,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3899739867677565,
+      "discounted_return": -0.6984793903355546,
+      "action_counts": [
+        0,
+        3,
+        97
+      ],
+      "parameter_count": 3,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10026,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3316894171957099,
+      "discounted_return": -0.6691906619073917,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10027,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3934292112497544,
+      "discounted_return": -0.7002156840451019,
+      "action_counts": [
+        10,
+        81,
+        9
+      ],
+      "parameter_count": 91,
+      "saturated_parameter_count": 91
+    },
+    {
+      "seed": 10028,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4507990394324057,
+      "discounted_return": -0.7290447434333697,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10029,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2632528564607732,
+      "discounted_return": -0.6348004303822976,
+      "action_counts": [
+        1,
+        15,
+        84
+      ],
+      "parameter_count": 16,
+      "saturated_parameter_count": 14
+    },
+    {
+      "seed": 10030,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.608383110068285,
+      "discounted_return": -0.8082327186272797,
+      "action_counts": [
+        13,
+        60,
+        27
+      ],
+      "parameter_count": 73,
+      "saturated_parameter_count": 61
+    },
+    {
+      "seed": 10031,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.352242466491345,
+      "discounted_return": -0.6795188273825852,
+      "action_counts": [
+        4,
+        2,
+        94
+      ],
+      "parameter_count": 6,
+      "saturated_parameter_count": 5
+    },
+    {
+      "seed": 10032,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1485253313746129,
+      "discounted_return": -0.5771484077259357,
+      "action_counts": [
+        1,
+        18,
+        81
+      ],
+      "parameter_count": 19,
+      "saturated_parameter_count": 17
+    },
+    {
+      "seed": 10033,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3327461911718053,
+      "discounted_return": -0.669721704106434,
+      "action_counts": [
+        74,
+        15,
+        11
+      ],
+      "parameter_count": 89,
+      "saturated_parameter_count": 89
+    },
+    {
+      "seed": 10034,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5335974135813903,
+      "discounted_return": -0.7706519666238137,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10035,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.467742056241498,
+      "discounted_return": -0.7375588222319084,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10036,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.42963139591734,
+      "discounted_return": -0.7184077366418791,
+      "action_counts": [
+        4,
+        65,
+        31
+      ],
+      "parameter_count": 69,
+      "saturated_parameter_count": 68
+    },
+    {
+      "seed": 10037,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.616198348478536,
+      "discounted_return": -0.8121599741098178,
+      "action_counts": [
+        2,
+        98,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 93
+    },
+    {
+      "seed": 10038,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6440424468336683,
+      "discounted_return": -0.8261519833335025,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10039,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6053026991689978,
+      "discounted_return": -0.8066847734517566,
+      "action_counts": [
+        3,
+        59,
+        38
+      ],
+      "parameter_count": 62,
+      "saturated_parameter_count": 60
+    },
+    {
+      "seed": 10040,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2797764745524254,
+      "discounted_return": -0.6431037560564947,
+      "action_counts": [
+        0,
+        99,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10041,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3816890960846355,
+      "discounted_return": -0.6943161286857458,
+      "action_counts": [
+        2,
+        96,
+        2
+      ],
+      "parameter_count": 98,
+      "saturated_parameter_count": 55
+    },
+    {
+      "seed": 10042,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2704672959557457,
+      "discounted_return": -0.6384257768621835,
+      "action_counts": [
+        1,
+        22,
+        77
+      ],
+      "parameter_count": 23,
+      "saturated_parameter_count": 21
+    },
+    {
+      "seed": 10043,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.0990854305004514,
+      "discounted_return": -0.5523042364323874,
+      "action_counts": [
+        2,
+        98,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 43
+    },
+    {
+      "seed": 10044,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.510541037261378,
+      "discounted_return": -0.7590658478700382,
+      "action_counts": [
+        2,
+        64,
+        34
+      ],
+      "parameter_count": 66,
+      "saturated_parameter_count": 19
+    },
+    {
+      "seed": 10045,
+      "length": 12,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": true,
+      "timeout": false,
+      "episode_return": -0.6347563950593942,
+      "discounted_return": -0.5726739957868843,
+      "action_counts": [
+        11,
+        1,
+        0
+      ],
+      "parameter_count": 12,
+      "saturated_parameter_count": 8
+    },
+    {
+      "seed": 10046,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6098487296225379,
+      "discounted_return": -0.8089692108655976,
+      "action_counts": [
+        3,
+        2,
+        95
+      ],
+      "parameter_count": 5,
+      "saturated_parameter_count": 4
+    },
+    {
+      "seed": 10047,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.456800737497049,
+      "discounted_return": -0.7320606721090692,
+      "action_counts": [
+        2,
+        71,
+        27
+      ],
+      "parameter_count": 73,
+      "saturated_parameter_count": 73
+    },
+    {
+      "seed": 10048,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4691955981948415,
+      "discounted_return": -0.7382892453240408,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10049,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.592688884986276,
+      "discounted_return": -0.8003461733599382,
+      "action_counts": [
+        13,
+        86,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10050,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7537992822826667,
+      "discounted_return": -0.8813061720013403,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 88
+    },
+    {
+      "seed": 10051,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.199745846370391,
+      "discounted_return": -0.6028873599851206,
+      "action_counts": [
+        1,
+        2,
+        97
+      ],
+      "parameter_count": 3,
+      "saturated_parameter_count": 2
+    },
+    {
+      "seed": 10052,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3757718875481315,
+      "discounted_return": -0.6913426570593615,
+      "action_counts": [
+        3,
+        6,
+        91
+      ],
+      "parameter_count": 9,
+      "saturated_parameter_count": 8
+    },
+    {
+      "seed": 10053,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1740559038962772,
+      "discounted_return": -0.5898541787524173,
+      "action_counts": [
+        34,
+        3,
+        63
+      ],
+      "parameter_count": 37,
+      "saturated_parameter_count": 3
+    },
+    {
+      "seed": 10054,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7098655161540122,
+      "discounted_return": -0.8982607553622606,
+      "action_counts": [
+        22,
+        2,
+        76
+      ],
+      "parameter_count": 24,
+      "saturated_parameter_count": 0
+    },
+    {
+      "seed": 10055,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.799200943355919,
+      "discounted_return": -0.904121077063275,
+      "action_counts": [
+        3,
+        97,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 88
+    },
+    {
+      "seed": 10056,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.269039232439932,
+      "discounted_return": -0.6365896146778022,
+      "action_counts": [
+        50,
+        5,
+        45
+      ],
+      "parameter_count": 55,
+      "saturated_parameter_count": 13
+    },
+    {
+      "seed": 10057,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.532869805224387,
+      "discounted_return": -0.7702863342836122,
+      "action_counts": [
+        19,
+        0,
+        81
+      ],
+      "parameter_count": 19,
+      "saturated_parameter_count": 19
+    },
+    {
+      "seed": 10058,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5756832686297155,
+      "discounted_return": -0.7918006375023683,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10059,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.418546176583927,
+      "discounted_return": -0.7128372746652896,
+      "action_counts": [
+        5,
+        13,
+        82
+      ],
+      "parameter_count": 18,
+      "saturated_parameter_count": 5
+    },
+    {
+      "seed": 10060,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3809112985860819,
+      "discounted_return": -0.6939252756713968,
+      "action_counts": [
+        1,
+        89,
+        10
+      ],
+      "parameter_count": 90,
+      "saturated_parameter_count": 89
+    },
+    {
+      "seed": 10061,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5258198787572677,
+      "discounted_return": -0.7667436576669682,
+      "action_counts": [
+        1,
+        98,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 91
+    },
+    {
+      "seed": 10062,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5765268648980277,
+      "discounted_return": -0.7922245552251393,
+      "action_counts": [
+        1,
+        99,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 21
+    },
+    {
+      "seed": 10063,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4715261779514561,
+      "discounted_return": -0.7394603909303794,
+      "action_counts": [
+        5,
+        9,
+        86
+      ],
+      "parameter_count": 14,
+      "saturated_parameter_count": 13
+    },
+    {
+      "seed": 10064,
+      "length": 26,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": true,
+      "timeout": false,
+      "episode_return": -1.0030377551695517,
+      "discounted_return": -0.8019974828384974,
+      "action_counts": [
+        24,
+        2,
+        0
+      ],
+      "parameter_count": 26,
+      "saturated_parameter_count": 3
+    },
+    {
+      "seed": 10065,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3721492299427724,
+      "discounted_return": -0.689522226101895,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10066,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3120810187971494,
+      "discounted_return": -0.659337195375452,
+      "action_counts": [
+        14,
+        18,
+        68
+      ],
+      "parameter_count": 32,
+      "saturated_parameter_count": 10
+    },
+    {
+      "seed": 10067,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.8199269438965728,
+      "discounted_return": -0.9145361527118459,
+      "action_counts": [
+        2,
+        98,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10068,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.8119938764118562,
+      "discounted_return": -0.9105496866391221,
+      "action_counts": [
+        1,
+        98,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 87
+    },
+    {
+      "seed": 10069,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.0890635768293166,
+      "discounted_return": -0.5472681290599576,
+      "action_counts": [
+        0,
+        23,
+        77
+      ],
+      "parameter_count": 23,
+      "saturated_parameter_count": 12
+    },
+    {
+      "seed": 10070,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.099325034349685,
+      "discounted_return": -0.5496664829990034,
+      "action_counts": [
+        9,
+        91,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 0
+    },
+    {
+      "seed": 10071,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3902469083413742,
+      "discounted_return": -0.6986165368549612,
+      "action_counts": [
+        0,
+        27,
+        73
+      ],
+      "parameter_count": 27,
+      "saturated_parameter_count": 0
+    },
+    {
+      "seed": 10072,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3660671218951812,
+      "discounted_return": -0.6864658903995884,
+      "action_counts": [
+        2,
+        31,
+        67
+      ],
+      "parameter_count": 33,
+      "saturated_parameter_count": 32
+    },
+    {
+      "seed": 10073,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4638186017708066,
+      "discounted_return": -0.738139156687569,
+      "action_counts": [
+        87,
+        12,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 0
+    },
+    {
+      "seed": 10074,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3039909263971399,
+      "discounted_return": -0.6552718223101204,
+      "action_counts": [
+        14,
+        80,
+        6
+      ],
+      "parameter_count": 94,
+      "saturated_parameter_count": 85
+    },
+    {
+      "seed": 10075,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6025327416591233,
+      "discounted_return": -0.8052928350045832,
+      "action_counts": [
+        1,
+        2,
+        97
+      ],
+      "parameter_count": 3,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10076,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6234429766079592,
+      "discounted_return": -0.815800490757769,
+      "action_counts": [
+        19,
+        7,
+        74
+      ],
+      "parameter_count": 26,
+      "saturated_parameter_count": 25
+    },
+    {
+      "seed": 10077,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.109207512155662,
+      "discounted_return": -0.5573907096259602,
+      "action_counts": [
+        0,
+        31,
+        69
+      ],
+      "parameter_count": 31,
+      "saturated_parameter_count": 31
+    },
+    {
+      "seed": 10078,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.5008627886521988,
+      "discounted_return": -0.7542024063578896,
+      "action_counts": [
+        0,
+        89,
+        11
+      ],
+      "parameter_count": 89,
+      "saturated_parameter_count": 89
+    },
+    {
+      "seed": 10079,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.6439804162753997,
+      "discounted_return": -0.8261208121986929,
+      "action_counts": [
+        2,
+        85,
+        13
+      ],
+      "parameter_count": 87,
+      "saturated_parameter_count": 80
+    },
+    {
+      "seed": 10080,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.275116560374042,
+      "discounted_return": -0.6407620906402222,
+      "action_counts": [
+        2,
+        98,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 100
+    },
+    {
+      "seed": 10081,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3722254875507611,
+      "discounted_return": -0.6902090700270154,
+      "action_counts": [
+        3,
+        80,
+        17
+      ],
+      "parameter_count": 83,
+      "saturated_parameter_count": 2
+    },
+    {
+      "seed": 10082,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7703224709485106,
+      "discounted_return": -0.8896092818836733,
+      "action_counts": [
+        3,
+        97,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10083,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2092668920090135,
+      "discounted_return": -0.607475634501409,
+      "action_counts": [
+        28,
+        7,
+        65
+      ],
+      "parameter_count": 35,
+      "saturated_parameter_count": 7
+    },
+    {
+      "seed": 10084,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.0808743610298328,
+      "discounted_return": -0.5431778805874594,
+      "action_counts": [
+        46,
+        5,
+        49
+      ],
+      "parameter_count": 51,
+      "saturated_parameter_count": 25
+    },
+    {
+      "seed": 10085,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.7869543150799532,
+      "discounted_return": -0.8979669925024896,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 2
+    },
+    {
+      "seed": 10086,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3965285061490467,
+      "discounted_return": -0.7017731186678631,
+      "action_counts": [
+        0,
+        82,
+        18
+      ],
+      "parameter_count": 82,
+      "saturated_parameter_count": 13
+    },
+    {
+      "seed": 10087,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1910349867549352,
+      "discounted_return": -0.5985100435954449,
+      "action_counts": [
+        0,
+        100,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 36
+    },
+    {
+      "seed": 10088,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.275035656551416,
+      "discounted_return": -0.6407214354529727,
+      "action_counts": [
+        0,
+        1,
+        99
+      ],
+      "parameter_count": 1,
+      "saturated_parameter_count": 0
+    },
+    {
+      "seed": 10089,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.485944224675345,
+      "discounted_return": -0.7467056405403732,
+      "action_counts": [
+        33,
+        67,
+        0
+      ],
+      "parameter_count": 100,
+      "saturated_parameter_count": 2
+    },
+    {
+      "seed": 10090,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3483146803766166,
+      "discounted_return": -0.6775450655158872,
+      "action_counts": [
+        12,
+        87,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 99
+    },
+    {
+      "seed": 10091,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4493267530424476,
+      "discounted_return": -0.7283049010263553,
+      "action_counts": [
+        4,
+        94,
+        2
+      ],
+      "parameter_count": 98,
+      "saturated_parameter_count": 97
+    },
+    {
+      "seed": 10092,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3535431972701646,
+      "discounted_return": -0.6801724609397803,
+      "action_counts": [
+        13,
+        75,
+        12
+      ],
+      "parameter_count": 88,
+      "saturated_parameter_count": 67
+    },
+    {
+      "seed": 10093,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.2221733798960166,
+      "discounted_return": -0.6186855363240367,
+      "action_counts": [
+        60,
+        7,
+        33
+      ],
+      "parameter_count": 67,
+      "saturated_parameter_count": 34
+    },
+    {
+      "seed": 10094,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.3740483870592635,
+      "discounted_return": -0.69047657641169,
+      "action_counts": [
+        1,
+        98,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 98
+    },
+    {
+      "seed": 10095,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4364887463799194,
+      "discounted_return": -0.7218536413969452,
+      "action_counts": [
+        5,
+        63,
+        32
+      ],
+      "parameter_count": 68,
+      "saturated_parameter_count": 1
+    },
+    {
+      "seed": 10096,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.656947604957252,
+      "discounted_return": -0.8326369874157049,
+      "action_counts": [
+        0,
+        99,
+        1
+      ],
+      "parameter_count": 99,
+      "saturated_parameter_count": 82
+    },
+    {
+      "seed": 10097,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.1552344011049618,
+      "discounted_return": -0.5805197995502323,
+      "action_counts": [
+        0,
+        82,
+        18
+      ],
+      "parameter_count": 82,
+      "saturated_parameter_count": 81
+    },
+    {
+      "seed": 10098,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.4271780862641952,
+      "discounted_return": -0.7171749177207016,
+      "action_counts": [
+        0,
+        94,
+        6
+      ],
+      "parameter_count": 94,
+      "saturated_parameter_count": 93
+    },
+    {
+      "seed": 10099,
+      "length": 100,
+      "success": false,
+      "pickup": false,
+      "out_of_bounds": false,
+      "timeout": true,
+      "episode_return": -1.138440760063916,
+      "discounted_return": -0.5720807839517161,
+      "action_counts": [
+        13,
+        68,
+        19
+      ],
+      "parameter_count": 81,
+      "saturated_parameter_count": 19
+    }
+  ]
+}

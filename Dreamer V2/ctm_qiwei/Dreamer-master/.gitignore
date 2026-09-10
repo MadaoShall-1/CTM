@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info
+./dist
+./logdir
+MUJOCO_LOG.TXT
+
+# Keep training checkpoints, replay and runtime logs local. Commit only the
+# explicitly selected lightweight validation evidence below.
+/outputs/*
+!/outputs/controller_baseline_20260910.json
+!/outputs/v2_corrected_validation_20260910/
+/outputs/v2_corrected_validation_20260910/*
+!/outputs/v2_corrected_validation_20260910/VALIDATION.md
+!/outputs/v2_corrected_validation_20260910/batch_status.json
+!/outputs/v2_corrected_validation_20260910/final_evaluation_100.json
+!/outputs/v2_corrected_validation_20260910/seed_0/
+/outputs/v2_corrected_validation_20260910/seed_0/*
+!/outputs/v2_corrected_validation_20260910/seed_0/metrics.jsonl
+!/outputs/v2_corrected_validation_20260910/seed_0/run_metadata.jsonl
