@@ -1,11 +1,14 @@
-"""Shared parameter contract: MOVE/TURN take parameters, CATCH does not."""
+"""Shared two-action contract: MOVE/TURN each take one parameter."""
 import numpy as np
+
+NUM_ACTIONS = 2
+ACTION_CONTRACT = 'move_turn_autopickup_v3'
 
 
 def parameter_mask(num_actions):
-  if num_actions not in (2, 3):
-    raise ValueError('UAV tasks have 2 or 3 actions')
-  return np.array([1., 1., 0.][:num_actions], np.float32)
+  if num_actions != NUM_ACTIONS:
+    raise ValueError('UAV tasks now have exactly 2 actions: MOVE and TURN')
+  return np.ones(NUM_ACTIONS, np.float32)
 
 
 def canonicalize_numpy(action, num_actions):

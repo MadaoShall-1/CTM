@@ -497,9 +497,17 @@ class Async:
       # The connection was already closed.
       pass
     if self._strategy == 'process':
-      self._process.wait()
+      try:
+        self._process.wait(timeout=5)
+      except subprocess.TimeoutExpired:
+        self._process.terminate()
+        try:
+          self._process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+          self._process.kill()
+          self._process.wait(timeout=5)
     else:
-      self._process.join()
+      self._process.join(timeout=5)
 
   def step(self, action, blocking=True):
     return self.call('step', action, blocking=blocking)

@@ -1,7 +1,7 @@
 """DreamerV2 model components adapted from the official DreamerV2 design.
 
 The world-model structure follows danijar/dreamerv2: categorical RSSM,
-KL balancing, image/reward/discount heads, and imagined actor-critic learning.
+KL balancing, vector/reward/discount heads, and imagined actor-critic learning.
 The only task-specific extension is HybridActionDecoder for the UAV benchmark's
 parameterized action space (categorical action + continuous per-action parameter).
 """
@@ -12,6 +12,23 @@ from tensorflow_probability import distributions as tfd
 from tensorflow.keras import mixed_precision as prec
 import tools
 import uav_actions
+
+
+def canonical_action(action):
+  """Canonicalize the hybrid action at the world-model boundary."""
+  action = tf.convert_to_tensor(action)
+  if action.shape[-1] != 2 * uav_actions.NUM_ACTIONS:
+    raise ValueError('World-model actions must have 4 MOVE/TURN channels')
+  num_actions = int(action.shape[-1]) // 2
+  select_raw = action[..., :num_actions]
+  index = tf.argmax(select_raw, -1, output_type=tf.int32)
+  select = tf.one_hot(index, num_actions, dtype=action.dtype)
+  is_reset = tf.reduce_all(tf.equal(action, 0), axis=-1, keepdims=True)
+  select = tf.where(is_reset, tf.zeros_like(select), select)
+  mask = tf.cast(uav_actions.parameter_mask(num_actions), action.dtype)
+  params = tf.clip_by_value(
+      action[..., num_actions:2 * num_actions], -1., 1.) * select * mask
+  return tf.concat([select, params], -1)
 
 
 class RSSM(tools.Module):
@@ -88,6 +105,7 @@ class RSSM(tools.Module):
 
   @tf.function
   def img_step(self, prev_state, prev_action):
+    prev_action = canonical_action(prev_action)
     stoch = tf.reshape(prev_state['stoch'], [tf.shape(prev_state['stoch'])[0], -1])
     x = tf.concat([stoch, prev_action], -1)
     x = self.get('img1', tfkl.Dense, self._hidden, self._act)(x)
@@ -100,6 +118,9 @@ class RSSM(tools.Module):
   def kl_loss(self, post, prior, balance=0.8, free=0.0, forward=False, valid=None):
     """DreamerV2 KL balancing with stop-gradient on opposite sides."""
     lhs, rhs = (prior, post) if forward else (post, prior)
+    # balance weights the prior-side KL gradient, regardless of KL direction.
+    # With KL(post || prior), the prior is rhs, so lhs gets 1 - balance.
+    mix = float(balance) if forward else (1.0 - float(balance))
     lhs_sg = {k: tf.stop_gradient(v) for k, v in lhs.items()}
     rhs_sg = {k: tf.stop_gradient(v) for k, v in rhs.items()}
     value_lhs = tfd.kl_divergence(self.get_dist(lhs), self.get_dist(rhs_sg))
@@ -107,7 +128,7 @@ class RSSM(tools.Module):
     reduce = tf.reduce_mean if valid is None else lambda x: tools.masked_mean(x, valid)
     loss_lhs = tf.maximum(reduce(value_lhs), float(free))
     loss_rhs = tf.maximum(reduce(value_rhs), float(free))
-    loss = float(balance) * loss_lhs + (1.0 - float(balance)) * loss_rhs
+    loss = mix * loss_lhs + (1.0 - mix) * loss_rhs
     value = reduce(tfd.kl_divergence(self.get_dist(post), self.get_dist(prior)))
     return loss, value
 
@@ -131,6 +152,25 @@ class ConvEncoder(tools.Module):
     vector = self.get('vector1', tfkl.Dense, self._vector_units, self._act)(vector)
     vector = self.get('vector2', tfkl.Dense, self._vector_units, self._act)(vector)
     return tf.concat([image, vector], -1)
+
+
+class VectorEncoder(tools.Module):
+  """Encode the exact low-dimensional UAV control state.
+
+  Rendering remains available for diagnostics, but raster reconstruction is
+  not a useful auxiliary objective when the simulator already exposes the
+  Markov state required for control.
+  """
+
+  def __init__(self, units=400, act=tf.nn.elu):
+    self._units = int(units)
+    self._act = act
+
+  def __call__(self, obs):
+    x = tf.cast(obs['vector'], prec.global_policy().compute_dtype)
+    for index in range(2):
+      x = self.get(f'h{index}', tfkl.Dense, self._units, self._act)(x)
+    return x
 
 
 class ConvDecoder(tools.Module):

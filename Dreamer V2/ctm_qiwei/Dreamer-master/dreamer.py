@@ -3,17 +3,16 @@
 Core algorithm follows the official danijar/dreamerv2 design:
 - categorical RSSM with straight-through samples
 - KL balancing
-- image, reward, and discount world-model heads
+- vector, reward, and discount world-model heads
 - latent imagination actor-critic
 - mixed dynamics/REINFORCE actor gradient
 - slow target critic
 
-The only benchmark-specific extension is a hybrid actor distribution for the
-paper's (discrete action, continuous parameter) action space. There is no
-separate UAV adapter module; the environment contract lives in envs.py.
+UAV adaptations include a two-action hybrid Actor, exact-vector policy input,
+and controller demonstration supervision. Pickup is automatic in envs.py.
 """
 from __future__ import annotations
-import argparse, collections, datetime, functools, json, os, pathlib, subprocess, sys, time
+import argparse, collections, datetime, functools, json, os, pathlib, pickle, subprocess, sys, time
 os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '3')
 import numpy as np
 import tensorflow as tf
@@ -23,19 +22,24 @@ import models
 import tools
 import wrappers
 import uav_actions
+from run_support import RunLock, append_jsonl, read_jsonl, snapshot_checkpoint
 
 
 def define_config():
   c = tools.AttrDict()
   # Runtime / benchmark. Paper-comparison defaults use Task 2.
-  c.logdir = pathlib.Path('./outputs/dreamerv2_uav_relay')
+  c.logdir = pathlib.Path('./outputs/dreamerv2_uav_relay_autopickup_v3')
   c.seed = 0
   c.task = 'uav_relay'
   c.reward_mode = 'goal_safe_v1'
   c.shaping_scale = 1.0
-  c.action_contract = 'move_turn_parameters_v2'
+  c.action_contract = uav_actions.ACTION_CONTRACT
+  c.observation_contract = 'uav_vector_v2'
+  c.training_contract = 'bounded_replay_uniform_demo_bc_v1'
   c.steps = 5e6
   c.eval_every = 1e4
+  c.checkpoint_every = 1000
+  c.checkpoint_snapshot_every = 10000
   c.log_every = 1e3
   c.envs = 1
   c.parallel = 'process'
@@ -53,10 +57,28 @@ def define_config():
   c.batch_size = 50
   c.batch_length = 20
   c.replay_capacity = 2_000_000
+  c.replay_rescan = 10000
+  c.replay_rescan_seconds = 10.0
+  c.minimum_free_gb = 2.0
+  c.pretrain_checkpoint_every = 100
+  # Half of replay windows are anchored on success, pickup, or terminal
+  # events (classes selected uniformly).  Ordinary windows remain available
+  # for background dynamics coverage.
+  c.replay_priority_fraction = 0.5
   c.dataset_prefetch = 2
   c.train_every = 5
   c.train_steps = 1
-  c.pretrain = 100
+  # The previous 100 updates left the model unable to predict TURN or terminal
+  # events; the actor then exploited those errors and saturated immediately.
+  c.pretrain = 1000
+  # Successful trajectories seed rare task events and provide a supervised
+  # actor warm start. This closes the sparse-reward deadlock where the world
+  # model sees pickup/success but the actor cannot navigate to those states.
+  c.demo_episodes = 64
+  c.demo_seed_start = 30_000
+  c.actor_pretrain = 3000
+  c.actor_bc_scale = 5.0
+  c.actor_imagination_scale = 0.1
 
   # Official DreamerV2 world-model structure/default scale.
   c.rssm_hidden = 400
@@ -82,10 +104,10 @@ def define_config():
   c.discount_lambda = 0.95
   c.imag_horizon = 15
   # UAV hybrid actor: discrete branch uses REINFORCE; continuous parameters use dynamics gradients.
-  c.parameter_grad_scale = 1.0
-  c.actor_discrete_ent = 1e-2
-  c.actor_parameter_ent = 1e-3
-  c.actor_unimix = 0.01
+  c.parameter_grad_scale = 0.1
+  c.actor_discrete_ent = 3e-2
+  c.actor_parameter_ent = 2e-2
+  c.actor_unimix = 0.05
   c.slow_target = True
   c.slow_target_update = 100
   c.slow_target_fraction = 1.0
@@ -95,12 +117,13 @@ def define_config():
 
 class DreamerV2(tools.Module):
   def __init__(self, config, datadir, actspace, obspace, writer):
+    validate_action_contract(config)
     self.c = config
     self.writer = writer
     self.actdim = int(actspace.shape[0])
     if not str(config.task).startswith('uav_'):
       raise ValueError('This cleaned build is intentionally UAV-only.')
-    self.num_actions = 2 if config.task.startswith('uav_direct') else 3
+    self.num_actions = uav_actions.NUM_ACTIONS
     if self.actdim != 2 * self.num_actions:
       raise ValueError('UAV action vector must be [K selections, K parameters].')
     with tf.device('/CPU:0'):
@@ -112,24 +135,84 @@ class DreamerV2(tools.Module):
       raise ValueError('UAV observation space must expose a normalized vector.')
     self.vector_size = int(np.prod(obspace['vector'].shape))
     metric_names = (
-        'model_loss', 'image_loss', 'vector_loss', 'reward_loss', 'discount_loss', 'kl',
-        'actor_loss', 'critic_loss', 'model_grad_norm', 'actor_grad_norm',
+        'model_loss', 'vector_loss', 'reward_loss', 'discount_loss', 'kl',
+        'actor_loss', 'actor_bc_loss', 'critic_loss',
+        'model_grad_norm', 'actor_grad_norm',
         'critic_grad_norm', 'actor_discrete_entropy',
         'actor_parameter_abs_mean', 'actor_parameter_saturation',
         'replay_valid_fraction', 'actor_parameter_active_fraction')
     self.metrics = {
         name: tf.keras.metrics.Mean(name=name) for name in metric_names}
     self.float = prec.global_policy().compute_dtype
+    self.warmup = dict(model=0, actor=0)
     self.dataset = iter(load_dataset(datadir, config))
+    # Actor imitation must retain the demonstrated action prior. Reusing the
+    # rare-event world-model sampler overrepresents pickup neighborhoods.
+    demo_directory = pathlib.Path(datadir) / 'demonstrations'
+    self.behavior_dataset = (iter(load_dataset(
+        demo_directory, config, priority_fraction=0.0, seed=config.seed + 1729,
+        demonstrations_only=True)) if any(demo_directory.glob('*.npz')) else None)
     self._build_model()
 
+  def save(self, filename):
+    tools.require_free_space(pathlib.Path(filename).parent, int(self.c.minimum_free_gb * 2**30))
+    payload = dict(action_contract=self.c.action_contract,
+                   observation_contract=self.c.observation_contract,
+                   training_contract=self.c.training_contract,
+                   task=self.c.task,
+                   step=int(self.step.numpy()) if hasattr(self, 'step') else None,
+                   warmup=getattr(self, 'warmup', dict(model=0, actor=0)),
+                   variables=[variable.numpy() for variable in self.variables])
+    if not all(np.isfinite(value).all() for value in payload['variables']):
+      raise ValueError('Refusing to checkpoint non-finite state; previous checkpoint retained')
+    filename = pathlib.Path(filename)
+    if filename.exists():
+      previous = filename.read_bytes()
+      tools.atomic_write(filename.with_suffix('.prev.pkl'), lambda stream: stream.write(previous))
+    tools.atomic_write(filename, lambda stream: pickle.dump(payload, stream))
+
+  def load(self, filename):
+    with pathlib.Path(filename).open('rb') as stream:
+      payload = pickle.load(stream)
+    if not isinstance(payload, dict):
+      raise ValueError('Legacy checkpoint predates automatic pickup; use a fresh logdir')
+    for key in ('action_contract', 'observation_contract', 'task', 'training_contract'):
+      if payload.get(key) != getattr(self.c, key):
+        raise ValueError(f'Checkpoint {key} mismatch; use a fresh logdir')
+    variables, values = self.variables, payload.get('variables', [])
+    if len(variables) != len(values) or any(
+        tuple(variable.shape) != np.shape(value)
+        for variable, value in zip(variables, values)):
+      raise ValueError('Checkpoint variable shapes do not match the current model')
+    if not all(np.isfinite(value).all() for value in values):
+      raise ValueError('Checkpoint contains non-finite state')
+    warmup = payload.get('warmup', {})
+    if any(not isinstance(warmup.get(key), int) or warmup[key] < 0 for key in ('model', 'actor')):
+      raise ValueError('Checkpoint has invalid warmup progress')
+    # Validate the entire checkpoint before assigning any state.
+    for variable, value in zip(variables, values):
+      variable.assign(value)
+    self.warmup = dict(warmup)
+
+  def pretrain(self):
+    """Resume either warmup phase without skipping partially completed work."""
+    def checkpoint_progress():
+      if sum(self.warmup.values()) % self.c.pretrain_checkpoint_every == 0:
+        self.save(self.c.logdir / 'variables.pkl')
+    while self.warmup['model'] < self.c.pretrain:
+      self.train(next(self.dataset), world_model_only=True)
+      self.warmup['model'] += 1
+      checkpoint_progress()
+    while self.behavior_dataset is not None and self.warmup['actor'] < self.c.actor_pretrain:
+      self.train_behavior(next(self.behavior_dataset))
+      self.warmup['actor'] += 1
+      checkpoint_progress()
+
   def _build_model(self):
-    self.encoder = models.ConvEncoder(
-        self.c.cnn_depth, tf.nn.elu, self.c.vector_units)
+    self.encoder = models.VectorEncoder(self.c.num_units, tf.nn.elu)
     self.rssm = models.RSSM(
         self.c.rssm_stoch, self.c.rssm_deter, self.c.rssm_hidden,
         self.c.rssm_discrete, tf.nn.elu)
-    self.decoder = models.ConvDecoder(self.c.cnn_depth, tf.nn.elu)
     self.vector = models.DenseHead(
         (self.vector_size,), 2, self.c.num_units, 'mse', tf.nn.elu)
     self.reward = models.DenseHead((), 4, self.c.num_units, 'mse', tf.nn.elu)
@@ -140,7 +223,7 @@ class DreamerV2(tools.Module):
     self.critic = models.DenseHead((), 4, self.c.num_units, 'mse', tf.nn.elu)
     self.slow_critic = models.DenseHead((), 4, self.c.num_units, 'mse', tf.nn.elu)
     self.model_opt = tools.Adam('model', [
-        self.encoder,self.rssm,self.decoder,self.vector,self.reward,self.discount],
+        self.encoder,self.rssm,self.vector,self.reward,self.discount],
                                  self.c.model_lr, clip=self.c.grad_clip)
     self.actor_opt = tools.Adam('actor', [self.actor], self.c.actor_lr, clip=min(self.c.grad_clip, 20.0))
     self.critic_opt = tools.Adam('critic', [self.critic], self.c.critic_lr, clip=self.c.grad_clip)
@@ -158,10 +241,11 @@ class DreamerV2(tools.Module):
       action *= mask
       state = latent, action
     if training and self.should_train(step):
-      if self.should_pretrain() and int(self.model_opt._opt.iterations.numpy()) == 0:
-        for _ in range(self.c.pretrain):
-          self.train(next(self.dataset), world_model_only=True)
-      for _ in range(self.c.train_steps): self.train(next(self.dataset))
+      if self.should_pretrain():
+        self.pretrain()
+      for _ in range(self.c.train_steps):
+        behavior = next(self.behavior_dataset) if self.behavior_dataset is not None else None
+        self.train(next(self.dataset), behavior_data=behavior)
       if self.should_log(step): self._write_summaries()
     action, state = self.policy(obs, state, training)
     if training: self.step.assign_add(len(reset) * self.c.action_repeat)
@@ -170,19 +254,21 @@ class DreamerV2(tools.Module):
   @tf.function
   def policy(self, obs, state, training):
     if state is None:
-      latent = self.rssm.initial(tf.shape(obs['image'])[0])
-      action = tf.zeros([tf.shape(obs['image'])[0], self.actdim], self.float)
+      latent = self.rssm.initial(tf.shape(obs['vector'])[0])
+      action = tf.zeros([tf.shape(obs['vector'])[0], self.actdim], self.float)
     else:
       latent, action = state
     embed = self.encoder(preprocess(obs))
     latent, _ = self.rssm.obs_step(latent, action, embed)
     feat = self.rssm.get_feat(latent)
-    dist = self.actor(feat)
+    # The exact compact state is available at deployment; do not force the
+    # policy to recover it through a stochastic RSSM bottleneck.
+    dist = self._actor_dist(self._actor_input(feat, obs['vector']))
     action = dist.sample() if training else dist.mode()
     return action, (latent, action)
 
   @tf.function
-  def train(self, data, init_only=False, world_model_only=False):
+  def train(self, data, init_only=False, world_model_only=False, behavior_data=None):
     data = preprocess(data)
     data['action'] = canonicalize_action(data['action'], self.num_actions)
     valid = data.get('valid', tf.ones_like(data['reward']))
@@ -190,23 +276,21 @@ class DreamerV2(tools.Module):
       embed = self.encoder(data)
       post, prior = self.rssm.observe(embed, data['action'])
       feat = self.rssm.get_feat(post)
-      image_dist = self.decoder(feat)
       vector_dist = self.vector(feat)
       reward_dist = self.reward(feat)
       discount_dist = self.discount(feat)
-      image_loss = -tools.masked_mean(image_dist.log_prob(data['image']), valid)
       vector_loss = -tools.masked_mean(vector_dist.log_prob(data['vector']), valid)
       reward_loss = -tools.masked_mean(reward_dist.log_prob(data['reward']), valid)
       discount_target = self.c.discount * data['discount']
       discount_loss = -tools.masked_mean(discount_dist.log_prob(discount_target), valid)
       kl_loss, kl_value = self.rssm.kl_loss(
           post, prior, self.c.kl_balance, self.c.kl_free, False, valid=valid)
-      model_loss = (image_loss + self.c.vector_scale * vector_loss + reward_loss
+      model_loss = (self.c.vector_scale * vector_loss + reward_loss
                     + self.c.discount_scale*discount_loss + self.c.kl_scale*kl_loss)
 
     if world_model_only and not init_only:
       norm = self.model_opt(model_tape, model_loss)
-      for name, value in dict(model_loss=model_loss, image_loss=image_loss,
+      for name, value in dict(model_loss=model_loss,
           vector_loss=vector_loss, reward_loss=reward_loss, discount_loss=discount_loss,
           kl=kl_value, model_grad_norm=norm,
           replay_valid_fraction=tf.reduce_mean(tf.cast(valid, tf.float32))).items():
@@ -214,7 +298,7 @@ class DreamerV2(tools.Module):
       return
 
     with tf.GradientTape() as actor_tape:
-      actor_feat, imag_feat, imag_action = self._imagine(post)
+      actor_input, actor_feat, imag_feat, imag_action = self._imagine(post)
       reward = self.reward(imag_feat).mean()
       discount = self.discount(imag_feat).mean()
       value = self.slow_critic(imag_feat).mean()
@@ -227,19 +311,35 @@ class DreamerV2(tools.Module):
       weights = tf.stop_gradient(tf.math.cumprod(tf.concat(
           [tf.ones_like(discount[:1]), discount[:-1]], 0), 0) * start_weight)
       # Hybrid parameterized-action gradient split:
-      # discrete MOVE/TURN/CATCH -> REINFORCE; continuous parameters -> dynamics gradient.
+      # discrete MOVE/TURN -> REINFORCE; continuous parameters -> dynamics gradient.
       # Score each action under the state that generated it, not the successor
       # state returned by the world model.
-      actor_dist = self.actor(tf.stop_gradient(actor_feat))
+      actor_dist = self._actor_dist(tf.stop_gradient(actor_input))
       baseline = self.critic(actor_feat).mean()
       advantage = tf.stop_gradient(returns - baseline)
       discrete_score = actor_dist.discrete_log_prob(imag_action) * advantage
       entropy_bonus = (self.c.actor_discrete_ent * actor_dist.discrete_entropy()
                        + self.c.actor_parameter_ent * actor_dist.parameter_entropy())
       dynamics_target = returns
-      actor_loss = -tools.masked_mean((
-          discrete_score + self.c.parameter_grad_scale * dynamics_target
+      imagination_loss = -tools.masked_mean((
+          self.c.actor_imagination_scale * (
+              discrete_score + self.c.parameter_grad_scale * dynamics_target)
           + entropy_bonus), weights)
+      # Successful controller trajectories are explicitly tagged in replay.
+      # Clone them from posterior states while continuing to optimize imagined
+      # returns everywhere. The reset row has demonstration=0 and is excluded.
+      # Replay action[t+1] generated observation[t+1]. A policy target must be
+      # paired with its source observation[t], not its successor.
+      bc_loss = tf.constant(0., tf.float32)
+      if behavior_data is not None:
+        behavior = preprocess(behavior_data)
+        behavior_input, behavior_action, demo_weight = align_behavior_supervision(
+            behavior['vector'], canonicalize_action(behavior['action'], self.num_actions),
+            behavior['demonstration'], behavior['valid'])
+        replay_actor = self._actor_dist(tf.stop_gradient(behavior_input))
+        bc_loss = behavior_cloning_loss(
+            replay_actor, tf.stop_gradient(behavior_action), demo_weight)
+      actor_loss = imagination_loss + self.c.actor_bc_scale * bc_loss
 
     with tf.GradientTape() as critic_tape:
       critic_dist = self.critic(tf.stop_gradient(actor_feat))
@@ -262,10 +362,10 @@ class DreamerV2(tools.Module):
     if self.c.slow_target and tf.equal(self._updates % self.c.slow_target_update, 0):
       self._update_slow_target(self.c.slow_target_fraction)
     parameter_weights = weights * tf.cast(actor_dist.mode_parameter_active(), weights.dtype)
-    for name, value in dict(model_loss=model_loss, image_loss=image_loss,
+    for name, value in dict(model_loss=model_loss,
         vector_loss=vector_loss, reward_loss=reward_loss,
         discount_loss=discount_loss, kl=kl_value,
-        actor_loss=actor_loss, critic_loss=critic_loss,
+        actor_loss=actor_loss, actor_bc_loss=bc_loss, critic_loss=critic_loss,
         model_grad_norm=model_norm, actor_grad_norm=actor_norm,
         critic_grad_norm=critic_norm,
         replay_valid_fraction=tf.reduce_mean(tf.cast(valid, tf.float32)),
@@ -276,20 +376,50 @@ class DreamerV2(tools.Module):
             actor_dist.selected_parameter_abs_mean() > 0.95, tf.float32), parameter_weights)).items():
       self.metrics[name].update_state(value)
 
+  @tf.function
+  def train_behavior(self, data):
+    """Warm-start only the Actor from tagged successful replay states."""
+    data = preprocess(data)
+    data['action'] = canonicalize_action(data['action'], self.num_actions)
+    valid = data.get('valid', tf.ones_like(data['reward']))
+    with tf.GradientTape() as tape:
+      behavior_input, behavior_action, demo_weight = align_behavior_supervision(
+          data['vector'], data['action'],
+          data.get('demonstration', tf.zeros_like(valid)), valid)
+      dist = self._actor_dist(tf.stop_gradient(behavior_input))
+      loss = behavior_cloning_loss(
+          dist, behavior_action, demo_weight)
+    norm = self.actor_opt(tape, loss)
+    self.metrics['actor_bc_loss'].update_state(loss)
+    self.metrics['actor_grad_norm'].update_state(norm)
+
+  @staticmethod
+  def _actor_input(feat, vector):
+    del feat
+    return tf.cast(vector, prec.global_policy().compute_dtype)
+
+  def _actor_dist(self, vector):
+    return self.actor(vector)
+
   def _imagine(self, post):
     flatten = lambda x: tf.reshape(x, [-1] + list(x.shape[2:]))
     start = {k: tf.stop_gradient(flatten(v)) for k,v in post.items()}
     state = start
-    actor_features, states, actions = [], [], []
+    actor_inputs, actor_features, states, actions = [], [], [], []
     for _ in range(self.c.imag_horizon):
       feat = self.rssm.get_feat(state)
-      action = self.actor(feat).sample()
+      predicted_vector = self.vector(feat).mean() if hasattr(self, 'vector') else None
+      actor_input = DreamerV2._actor_input(
+          feat, predicted_vector) if predicted_vector is not None else feat
+      action = self._actor_dist(actor_input).sample()
       state = self.rssm.img_step(state, action)
-      actor_features.append(feat); states.append(state); actions.append(action)
+      actor_inputs.append(actor_input); actor_features.append(feat)
+      states.append(state); actions.append(action)
+    actor_inputs = tf.stack(actor_inputs, 0)
     actor_features = tf.stack(actor_features, 0)
     states = {k: tf.stack([s[k] for s in states], 0) for k in states[0]}
     actions = tf.stack(actions, 0)
-    return actor_features, self.rssm.get_feat(states), actions
+    return actor_inputs, actor_features, self.rssm.get_feat(states), actions
 
   def _update_slow_target(self, fraction):
     # Variables are created lazily; force both critics once before this call.
@@ -303,8 +433,7 @@ class DreamerV2(tools.Module):
     step = int(self.step.numpy())
     values = {k: float(v.result()) for k,v in self.metrics.items()}
     for v in self.metrics.values(): v.reset_state()
-    with (self.c.logdir/'metrics.jsonl').open('a') as f:
-      f.write(json.dumps({'step':step, **values})+'\n')
+    append_jsonl(self.c.logdir / 'metrics.jsonl', {'step': step, **values})
     print(f'[{step}] ' + ' / '.join(f'{k} {v:.3g}' for k,v in values.items()))
 
 
@@ -325,30 +454,104 @@ def preprocess(obs):
 def canonicalize_action(action, num_actions):
   """Match the model action to the parameterized action executed by the env."""
   action = tf.convert_to_tensor(action)
-  select_raw = action[..., :num_actions]
-  index = tf.argmax(select_raw, -1, output_type=tf.int32)
-  select = tf.one_hot(index, num_actions, dtype=action.dtype)
-  # Collect.reset() and policy initialization use all-zero sentinel actions.
-  # They are not MOVE transitions and must remain identical in both paths.
-  is_reset = tf.reduce_all(tf.equal(action, 0), axis=-1, keepdims=True)
-  select = tf.where(is_reset, tf.zeros_like(select), select)
-  params = tf.clip_by_value(action[..., num_actions:2 * num_actions], -1., 1.) * select
-  params *= tf.cast(uav_actions.parameter_mask(num_actions), params.dtype)
-  return tf.concat([select, params], -1)
+  if action.shape[-1] != 2 * num_actions:
+    raise ValueError('Invalid UAV action width')
+  return models.canonical_action(action)
+
+
+def behavior_cloning_loss(actor_dist, action, weight):
+  """Clone demonstrations without boundary or rare-action pathologies.
+
+  A squashed Gaussian likelihood has very large gradients for controller
+  targets at +/-1. Instead, regress the bounded executed parameter directly.
+  Samples retain their demonstrated frequency. Rare-event balancing belongs
+  to world-model replay; applying it to Actor imitation distorts the action
+  prior and can make TURN dominate away from demonstrations.
+  """
+  action = tf.cast(action, actor_dist.logits.dtype)
+  weight = tf.cast(weight, tf.float32)
+  k = tf.shape(actor_dist.logits)[-1]
+  select, target_parameter = action[..., :k], action[..., k:]
+  discrete_loss = tf.nn.softmax_cross_entropy_with_logits(
+      labels=select, logits=actor_dist.logits)
+  predicted_parameter = tf.tanh(actor_dist.mean_tensor)
+  parameter_loss = tf.reduce_sum(
+      tf.square(predicted_parameter - target_parameter)
+      * select * actor_dist.parameter_mask, -1)
+  per_step = tf.cast(discrete_loss + parameter_loss, tf.float32)
+  return tools.masked_mean(per_step, weight)
+
+
+def align_behavior_supervision(actor_input, action, demonstration, valid):
+  """Pair each policy state with the next replay transition's action."""
+  return (actor_input[:, :-1], action[:, 1:],
+          tf.cast(demonstration[:, 1:], tf.float32)
+          * tf.cast(valid[:, 1:], tf.float32))
+
+
+def validate_action_contract(config):
+  if config.action_contract != uav_actions.ACTION_CONTRACT:
+    raise ValueError('This build requires move_turn_autopickup_v3; use a fresh logdir')
+  if config.training_contract != 'bounded_replay_uniform_demo_bc_v1':
+    raise ValueError('This build requires the bounded replay training contract; use a fresh logdir')
+
+
+def validate_run_contract(config, datadir):
+  """Reject old replay/checkpoints before collecting data or updating metadata."""
+  validate_action_contract(config)
+  metadata_path = pathlib.Path(config.logdir) / 'run_metadata.jsonl'
+  checkpoint = pathlib.Path(config.logdir) / 'variables.pkl'
+  if not tools.count_episodes(datadir)[0] and not any((pathlib.Path(datadir) / 'demonstrations').glob('*.npz')):
+    if checkpoint.exists():
+      raise ValueError('Checkpoint without replay cannot be resumed; use a fresh logdir')
+    return
+  if not metadata_path.exists():
+    raise ValueError('Existing replay has no provenance; use a fresh logdir')
+  records = list(read_jsonl(metadata_path))
+  if not records:
+    raise ValueError('Existing replay has no complete provenance; use a fresh logdir')
+  previous = records[-1]['config']
+  for key, fallback in [('reward_mode', 'legacy'), ('discount', .99),
+                        ('shaping_scale', 0.0), ('task', None), ('time_limit', 100),
+                        ('action_contract', 'legacy'),
+                        ('observation_contract', 'legacy'),
+                        ('training_contract', 'legacy')]:
+    if previous.get(key, fallback) != getattr(config, key):
+      raise ValueError(f'Cannot mix replay across {key} changes; use a fresh logdir')
+  for key in ('seed', 'demo_episodes', 'demo_seed_start', 'pretrain', 'actor_pretrain',
+              'actor_bc_scale', 'actor_imagination_scale', 'model_lr', 'actor_lr', 'critic_lr',
+              'rssm_hidden', 'rssm_deter', 'rssm_stoch', 'rssm_discrete', 'num_units'):
+    if previous.get(key) != getattr(config, key):
+      raise ValueError(f'Cannot resume across {key} changes; use a fresh logdir')
 
 
 def count_steps(datadir, config):
   return tools.count_episodes(datadir)[1] * config.action_repeat
 
 
-def load_dataset(directory, config):
-  episode = next(tools.load_episodes(directory, 1))
+def load_dataset(directory, config, priority_fraction=None, seed=None, demonstrations_only=False):
+  validate_action_contract(config)
+  def validate_episode(episode):
+    if episode['action'].ndim != 2 or episode['action'].shape[-1] != 4:
+      raise ValueError('Replay must contain 4-channel MOVE/TURN actions; use a fresh logdir')
+    return episode
+  fields = ('vector', 'action', 'reward', 'discount', 'demonstration')
+  if not demonstrations_only:
+    fields += ('phase', 'carrying_supply', 'is_success')
+  pinned = None if demonstrations_only else pathlib.Path(directory) / 'demonstrations'
+  episode = validate_episode(next(tools.load_episodes(
+      directory, 1, capacity=1,
+      keys=fields, pinned_directory=pinned)))
   episode['valid'] = np.ones(len(episode['reward']), np.float32)
   types = {k:v.dtype for k,v in episode.items()}
   shapes = {k:(None,)+v.shape[1:] for k,v in episode.items()}
-  gen = lambda: tools.load_episodes(
-      directory, config.train_steps, config.batch_length, False,
-      seed=config.seed, capacity=config.replay_capacity)
+  gen = lambda: (validate_episode(item) for item in tools.load_episodes(
+      directory, config.replay_rescan, config.batch_length, False,
+      seed=config.seed if seed is None else seed,
+      capacity=None if demonstrations_only else config.replay_capacity,
+      keys=fields, pinned_directory=pinned, rescan_seconds=config.replay_rescan_seconds,
+      priority_fraction=(config.replay_priority_fraction if priority_fraction is None
+                         else priority_fraction)))
   sig = {k:tf.TensorSpec(shapes[k], types[k]) for k in types}
   ds = tf.data.Dataset.from_generator(gen, output_signature=sig)
   return ds.batch(config.batch_size, drop_remainder=True).prefetch(config.dataset_prefetch)
@@ -370,11 +573,16 @@ def summarize_episode(ep, config, datadir, writer, prefix, progress=None, counte
   terminated = bool(float(np.asarray(ep.get('terminated', [0]))[-1]))
   truncated = bool(float(np.asarray(ep.get('truncated', [0]))[-1]))
   actions = np.asarray(ep['action'])[1:]
-  num_actions = 2 if str(config.task).startswith('uav_direct') else 3
+  num_actions = uav_actions.NUM_ACTIONS
   selected = np.argmax(actions[:, :num_actions], -1)
   params = actions[np.arange(len(actions)), num_actions + selected]
   active_params = params[selected < 2]
-  total_steps = int(count_steps(datadir, config))
+  if counters is not None and 'steps' in counters:
+    if prefix == 'train':
+      counters['steps'] += length
+    total_steps = counters['steps']
+  else:
+    total_steps = int(count_steps(datadir, config))
 
   if counters is not None:
     counters[prefix] = counters.get(prefix, 0) + 1
@@ -399,14 +607,11 @@ def summarize_episode(ep, config, datadir, writer, prefix, progress=None, counte
       f'{prefix}/truncated': float(truncated),
       f'{prefix}/action_move_fraction': float(np.mean(selected == 0)),
       f'{prefix}/action_turn_fraction': float(np.mean(selected == 1)),
-      f'{prefix}/action_catch_fraction': (
-          float(np.mean(selected == 2)) if num_actions == 3 else 0.0),
       f'{prefix}/parameter_action_fraction': float(np.mean(selected < 2)),
       f'{prefix}/selected_parameter_abs_mean': float(np.mean(np.abs(active_params))) if len(active_params) else 0.0,
       f'{prefix}/selected_parameter_saturation': float(np.mean(np.abs(active_params) > 0.95)) if len(active_params) else 0.0,
   }
-  with (config.logdir / 'metrics.jsonl').open('a') as f:
-    f.write(json.dumps(record) + '\n')
+  append_jsonl(config.logdir / 'metrics.jsonl', record)
 
   # Only training episodes advance the environment-step progress bar.
   if progress is not None and prefix == 'train':
@@ -437,7 +642,8 @@ def make_env(
   env = wrappers.Async(ctor, config.parallel)
   callbacks = []
   if store:
-    callbacks.append(lambda ep: tools.save_episodes(datadir, [ep]))
+    callbacks.append(lambda ep: tools.save_episodes(
+        datadir, [ep], minimum_free_bytes=int(config.minimum_free_gb * 2**30)))
   callbacks.append(lambda ep: summarize_episode(
       ep, config, datadir, writer, prefix, progress, counters))
   env = wrappers.Collect(env, callbacks, config.precision)
@@ -445,7 +651,7 @@ def make_env(
   return env
 
 
-def write_run_metadata(config, resumed):
+def write_run_metadata(config, resumed, phase='running'):
   """Append a complete, immutable description of this invocation."""
   try:
     revision = subprocess.check_output(
@@ -459,13 +665,13 @@ def write_run_metadata(config, resumed):
   record = {
       'started_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
       'resumed_checkpoint': bool(resumed),
+      'phase': phase,
       'git_commit': revision,
       'python': sys.version,
       'tensorflow': tf.__version__,
       'config': resolved,
   }
-  with (config.logdir / 'run_metadata.jsonl').open('a') as f:
-    f.write(json.dumps(record, sort_keys=True) + '\n')
+  append_jsonl(config.logdir / 'run_metadata.jsonl', record, durable=True)
 
 
 def make_random_agent(num_actions, seed):
@@ -483,9 +689,83 @@ def make_random_agent(num_actions, seed):
   return agent
 
 
+def collect_controller_demonstrations(config, datadir):
+  """Seed fresh replay with successful dynamics and actor supervision.
+
+  These trajectories make pickup, delivery reward, phase switching, and
+  termination observable to the world model, and break the Actor's sparse
+  pickup/success supervision deadlock through a tagged behavior-cloning loss.
+  """
+  if config.demo_episodes <= 0:
+    return dict(episodes=0, transitions=0)
+  if tools.count_episodes(datadir)[0]:
+    raise ValueError('Controller demonstrations may only seed an empty replay')
+  from controller_baseline import controller_action
+  from envs import DreamerV2UAVEnv
+  task = str(config.task).split('_', 1)[1]
+  episodes = []
+  for offset in range(int(config.demo_episodes)):
+    environment = DreamerV2UAVEnv(
+        task, max_episode_steps=config.time_limit,
+        seed=int(config.demo_seed_start) + offset,
+        reward_mode=config.reward_mode, reward_discount=config.discount,
+        shaping_scale=config.shaping_scale)
+    observation = environment.reset()
+    transitions = [dict(
+        observation, action=np.zeros(2 * environment.num_actions, np.float32),
+        reward=np.float32(0), discount=np.float32(1),
+        demonstration=np.float32(0))]
+    for _ in range(config.time_limit):
+      action = controller_action(environment)
+      observation, reward, done, info = environment.step(action)
+      transitions.append(dict(
+          observation, action=action, reward=np.float32(reward),
+          discount=np.float32(info['discount']), demonstration=np.float32(1)))
+      if done:
+        break
+    environment.close()
+    if not done or not bool(observation['is_success']):
+      raise RuntimeError(
+          f'Controller demonstration failed for seed {config.demo_seed_start + offset}')
+    episodes.append({
+        key: np.asarray([transition[key] for transition in transitions])
+        for key in transitions[0]})
+  # The immutable demo directory is authoritative; root copies count the
+  # originally collected transitions and remain available to diagnostics.
+  for filename in tools.save_episodes(datadir / 'demonstrations', episodes):
+    contents = filename.read_bytes()
+    tools.atomic_write(datadir / filename.name,
+                       lambda stream: stream.write(contents))
+  result = dict(episodes=len(episodes),
+                transitions=sum(len(episode['reward']) - 1 for episode in episodes))
+  print('Controller replay seed: '
+        f"{result['episodes']} successful episodes, {result['transitions']} transitions")
+  return result
+
+
 def main(config):
+  config.logdir = pathlib.Path(config.logdir)
+  config.logdir.mkdir(parents=True, exist_ok=True)
+  with RunLock(config.logdir / '.run.lock'):
+    return _run(config)
+
+
+def _run(config):
+  validate_action_contract(config)
   if config.reward_mode == 'goal_safe_v1' and config.action_repeat != 1:
     raise ValueError('goal_safe_v1 requires action_repeat=1 to preserve per-step reward discounting')
+  if (config.demo_episodes < 0 or config.actor_pretrain < 0 or
+      config.actor_bc_scale < 0 or
+      config.actor_imagination_scale < 0 or
+      config.replay_priority_fraction < 0 or config.replay_priority_fraction > 1):
+    raise ValueError('Invalid demonstration or replay-priority configuration')
+  if min(config.checkpoint_every, config.eval_every, config.pretrain_checkpoint_every,
+         config.replay_rescan, config.replay_rescan_seconds, config.replay_capacity,
+         config.envs, config.train_every, config.train_steps, config.batch_size) <= 0:
+    raise ValueError('Training intervals, replay capacity and batch sizes must be positive')
+  if config.batch_length < 2 or min(config.pretrain, config.actor_pretrain,
+      config.minimum_free_gb, config.checkpoint_snapshot_every) < 0:
+    raise ValueError('Invalid sequence length, warmup or disk guard configuration')
   np.random.seed(config.seed); tf.random.set_seed(config.seed)
   if config.gpu_growth:
     for gpu in tf.config.list_physical_devices('GPU'):
@@ -495,62 +775,80 @@ def main(config):
   print('Runtime', devices[0].name if devices else 'CPU', '/ DreamerV2 categorical RSSM')
   config.steps=int(config.steps); config.logdir=pathlib.Path(config.logdir); config.logdir.mkdir(parents=True,exist_ok=True)
   datadir = config.logdir / 'episodes'
-  metadata_path = config.logdir / 'run_metadata.jsonl'
-  if count_steps(datadir, config):
-    if not metadata_path.exists():
-      raise ValueError('Existing replay has no reward provenance; use a fresh logdir')
-    previous = json.loads(metadata_path.read_text().splitlines()[-1])['config']
-    for key, fallback in [('reward_mode', 'legacy'), ('discount', .99),
-                          ('shaping_scale', 0.0), ('task', None), ('time_limit', 100),
-                          ('action_contract', 'legacy')]:
-      if previous.get(key, fallback) != getattr(config, key):
-        raise ValueError(f'Cannot mix replay across {key} changes; use a fresh logdir')
+  validate_run_contract(config, datadir)
+  tools.require_free_space(config.logdir, int(config.minimum_free_gb * 2**30))
+  checkpoint = config.logdir / 'variables.pkl'
+  write_run_metadata(config, checkpoint.exists(), phase='initializing')
+  pinned = list((datadir / 'demonstrations').glob('*.npz'))
+  if pinned:
+    if len(pinned) != config.demo_episodes:
+      raise ValueError('Incomplete demonstration initialization; use a fresh logdir')
+    for filename in pinned:
+      if not (datadir / filename.name).exists():
+        contents = filename.read_bytes()
+        tools.atomic_write(datadir / filename.name, lambda stream: stream.write(contents))
+  if not tools.count_episodes(datadir)[0] and config.demo_episodes:
+    collect_controller_demonstrations(config, datadir)
+  if config.demo_episodes and not any((datadir / 'demonstrations').glob('*.npz')):
+    raise ValueError('Missing permanent demonstration store; use a fresh logdir')
   writer = tf.summary.create_file_writer(str(config.logdir))
   initial_steps = count_steps(datadir, config)
-  counters = {'train': tools.count_episodes(datadir)[0], 'test': 0}
+  counters = {'train': tools.count_episodes(datadir)[0], 'test': 0, 'steps': initial_steps}
   progress = tqdm(
       total=config.steps, initial=min(initial_steps, config.steps), unit='step',
       dynamic_ncols=True, desc='DreamerV2 UAV')
-  train = [make_env(
-      config, writer, 'train', datadir, True, progress, counters,
-      seed=config.seed + index) for index in range(config.envs)]
-  test = [make_env(
-      config, writer, 'test', datadir, False, None, counters,
-      seed=config.seed + 10_000 + index) for index in range(config.envs)]
-  actspace = train[0].action_space
-  obspace = train[0].observation_space
-  step = count_steps(datadir, config)
-  prefill = max(0, config.prefill - step)
-  tqdm.write(f'Prefill: {prefill} environment steps')
-  num_actions = 2 if str(config.task).startswith('uav_direct') else 3
-  random_agent = make_random_agent(num_actions, config.seed + 20_000)
-  tools.simulate(random_agent, train, prefill / config.action_repeat)
-  agent = DreamerV2(config, datadir, actspace, obspace, writer)
-  checkpoint = config.logdir / 'variables.pkl'
-  resumed = checkpoint.exists()
-  if resumed:
-    agent.load(checkpoint)
-    # Replay files are the source of truth if a process stopped after saving an
-    # episode but before the next checkpoint write.
-    agent.step.assign(count_steps(datadir, config))
-    tqdm.write(f'Resumed checkpoint: {checkpoint}')
-  write_run_metadata(config, resumed)
-  state = None
-  step = count_steps(datadir, config)
-  while step < config.steps:
-    remaining = min(config.eval_every, config.steps - step)
-    state = tools.simulate(
-        agent, train, remaining / config.action_repeat, state=state)
-    step = count_steps(datadir, config)
-    agent.save(checkpoint)
-    if config.eval_episodes:
-      tools.simulate(
-          functools.partial(agent, training=False), test,
-          episodes=config.eval_episodes)
-  progress.close()
-  writer.flush()
-  for env in train + test:
-    env.close()
+  train, test = [], []
+  try:
+    for index in range(config.envs):
+      train.append(make_env(config, writer, 'train', datadir, True, progress, counters,
+                            seed=config.seed + index))
+      test.append(make_env(config, writer, 'test', datadir, False, None, counters,
+                           seed=config.seed + 10_000 + index))
+    step = counters['steps']
+    prefill = max(0, config.prefill - step)
+    tqdm.write(f'Prefill: {prefill} environment steps')
+    random_agent = make_random_agent(uav_actions.NUM_ACTIONS, config.seed + 20_000)
+    tools.simulate(random_agent, train, prefill / config.action_repeat)
+    agent = DreamerV2(config, datadir, train[0].action_space, train[0].observation_space, writer)
+    resumed = checkpoint.exists()
+    if resumed:
+      agent.load(checkpoint)
+      agent.step.assign(counters['steps'])
+      tqdm.write(f'Resumed checkpoint: {checkpoint}')
+    else:
+      agent.save(checkpoint)
+    write_run_metadata(config, resumed)
+    state = None
+    step = counters['steps']
+    next_eval = (step // int(config.eval_every) + 1) * int(config.eval_every)
+    snapshot_every = int(config.checkpoint_snapshot_every)
+    next_snapshot = (step // snapshot_every + 1) * snapshot_every if snapshot_every else float('inf')
+    while step < config.steps:
+      remaining = min(config.checkpoint_every, next_eval - step, config.steps - step)
+      if state is not None:
+        # Completed-episode overshoot is already reflected in the absolute
+        # counter; do not subtract it a second time from the next interval.
+        state = (0, *state[1:])
+      state = tools.simulate(agent, train, remaining / config.action_repeat, state=state)
+      step = counters['steps']
+      agent.save(checkpoint)
+      if snapshot_every and (step >= next_snapshot or step >= config.steps):
+        snapshot_checkpoint(checkpoint, int(agent.step.numpy()),
+                            int(config.minimum_free_gb * 2**30))
+        next_snapshot = (step // snapshot_every + 1) * snapshot_every
+      if step >= next_eval or step >= config.steps:
+        if config.eval_episodes:
+          tools.simulate(functools.partial(agent, training=False), test, episodes=config.eval_episodes)
+        next_eval = (step // int(config.eval_every) + 1) * int(config.eval_every)
+  finally:
+    progress.close()
+    for env in train + test:
+      try:
+        env.close()
+      except Exception as error:
+        tqdm.write(f'Environment cleanup failed: {error}')
+    writer.flush()
+    writer.close()
 
 
 if __name__=='__main__':

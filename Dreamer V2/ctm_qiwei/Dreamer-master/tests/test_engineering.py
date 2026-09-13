@@ -19,7 +19,7 @@ class EnvironmentContractTest(unittest.TestCase):
   def test_original_relay_scene_exposes_structured_vector(self):
     env = DreamerV2UAVEnv('relay', seed=7)
     obs = env.reset()
-    action = np.asarray([0, 0, 1, 0, 0, 0], np.float32)
+    action = np.asarray([1, 0, 0, 0], np.float32)
     next_obs, _, _, _ = env.step(action)
     self.assertEqual(obs['vector'].shape, env.observation_space['vector'].shape)
     self.assertFalse(np.allclose(obs['vector'], next_obs['vector']))
@@ -28,6 +28,18 @@ class EnvironmentContractTest(unittest.TestCase):
   def test_obstacle_variant_is_not_part_of_the_scene(self):
     with self.assertRaises(ValueError):
       DreamerV2UAVEnv('relay_obstacles')
+
+  def test_vector_v2_heading_is_continuous_and_keeps_both_goals(self):
+    env = DreamerV2UAVEnv('relay', seed=7)
+    env.reset()
+    env.env.state = UAVState(500, 600, 12, np.pi - 1e-4)
+    before = env._vector_observation(env.env._get_obs())
+    env.env.state = UAVState(500, 600, 12, -np.pi + 1e-4)
+    after = env._vector_observation(env.env._get_obs())
+    self.assertEqual(before.shape, (13,))
+    self.assertLess(np.linalg.norm(before[3:5] - after[3:5]), 1e-3)
+    np.testing.assert_allclose(before[5:9], after[5:9])
+    self.assertAlmostEqual(float(np.linalg.norm(after[3:5])), 1., places=5)
 
   def test_out_of_bounds_keeps_original_sparse_reward(self):
     env = DreamerV2UAVEnv('direct', seed=3, reward_mode='legacy')
@@ -53,7 +65,7 @@ class SafeRewardTest(unittest.TestCase):
   def test_failure_return_does_not_reward_early_exit(self):
     for seed in range(10):
       scores = []
-      for action in ([1, 0, 0, .964, 0, 0], [0, 0, 1, 0, 0, 0]):
+      for action in ([1, 0, .964, 0], [1, 0, 0, 0]):
         env = DreamerV2UAVEnv('relay', seed=seed)
         env.reset()
         potential = env._potential()
@@ -90,19 +102,16 @@ class SafeRewardTest(unittest.TestCase):
     self.assertEqual(reward, -1.)
     self.assertEqual(float(obs['is_success']), 0.)
 
-  def test_catch_pickup_and_delivery_still_required(self):
+  def test_automatic_pickup_and_delivery_still_required(self):
     env = DreamerV2UAVEnv('relay', seed=0, shaping_scale=0)
     env.reset()
     env.env.reset(options=dict(start=[500, 500], relay_goal=[500, 500],
                                final_goal=[1500, 500], speed=0, heading=0))
-    obs, reward, done, _ = env.step(np.array([1, 0, 0, 0, 0, 0], np.float32))
-    self.assertFalse(done)
-    self.assertEqual(float(obs['carrying_supply']), 0.)
-    obs, reward, done, _ = env.step(np.array([0, 0, 1, 0, 0, 0], np.float32))
+    obs, reward, done, _ = env.step(np.array([1, 0, 0, 0], np.float32))
     self.assertFalse(done)
     self.assertEqual(float(obs['carrying_supply']), 1.)
     env.env.state = UAVState(1490, 500, 0, 0)
-    obs, reward, done, _ = env.step(np.array([0, 0, 1, 0, 0, 0], np.float32))
+    obs, reward, done, _ = env.step(np.array([1, 0, 0, 0], np.float32))
     self.assertTrue(done)
     self.assertEqual(float(obs['is_success']), 1.)
     self.assertEqual(reward, 1.)
@@ -116,49 +125,65 @@ class SafeRewardTest(unittest.TestCase):
 
 class ActionContractTest(unittest.TestCase):
 
-  def test_catch_is_parameter_free_in_all_action_paths(self):
-    catch = tf.constant([[0., 0., 1., .1, .2, .9]])
-    expected = [[0., 0., 1., 0., 0., 0.]]
-    np.testing.assert_array_equal(dreamer.canonicalize_action(catch, 3), expected)
-    np.testing.assert_array_equal(uav_actions.canonicalize_numpy(catch, 3), expected)
-    env = DreamerV2UAVEnv('relay')
-    discrete, parameter = env.decode_action(catch.numpy()[0])
-    self.assertEqual(discrete, 2)
-    np.testing.assert_array_equal(parameter, [0.])
-    dist = models.HybridDist(tf.constant([[-1e9, -1e9, 0.]]),
-                             tf.ones([1, 3]) * 10, tf.ones([1, 3]))
-    np.testing.assert_array_equal(dist.sample(), expected)
-    np.testing.assert_array_equal(dist.mode(), expected)
+  def test_old_six_channel_actions_are_rejected(self):
+    for task in ('direct', 'relay'):
+      env = DreamerV2UAVEnv(task)
+      self.assertEqual(env.num_actions, 2)
+      self.assertEqual(env.action_space.shape, (4,))
+      with self.assertRaises(ValueError):
+        env.decode_action(np.zeros(6, np.float32))
+    with self.assertRaises(ValueError):
+      models.canonical_action(tf.zeros([1, 6]))
+    with self.assertRaises(ValueError):
+      uav_actions.canonicalize_numpy(np.zeros(6, np.float32), 3)
 
-  def test_catch_parameter_has_no_dynamics_or_entropy_gradient(self):
-    mean = tf.Variable([[1., 2., 3.]])
-    std = tf.Variable([[.2, .3, .4]])
+  def test_both_actions_keep_their_selected_parameter(self):
+    for selected in (0, 1):
+      logits = np.full([1, 2], -1e9, np.float32)
+      logits[0, selected] = 0
+      dist = models.HybridDist(tf.constant(logits), tf.ones([1, 2]), tf.ones([1, 2]))
+      for action in (dist.mode(), dist.sample()):
+        self.assertEqual(action.shape, (1, 4))
+        self.assertEqual(float(action[0, 2 + (1 - selected)]), 0.)
+        self.assertNotEqual(float(action[0, 2 + selected]), 0.)
+
+  def test_both_parameter_branches_have_entropy_gradients(self):
+    mean = tf.Variable([[1., 2.]])
+    std = tf.Variable([[.2, .3]])
     with tf.GradientTape() as tape:
-      dist = models.HybridDist(tf.zeros([1, 3]), mean, std)
-      objective = tf.reduce_sum(dist.sample() + dist.mode()) + tf.reduce_sum(dist.parameter_entropy())
+      dist = models.HybridDist(tf.zeros([1, 2]), mean, std)
+      objective = tf.reduce_sum(dist.parameter_entropy())
     grads = tape.gradient(objective, [mean, std])
     for grad in grads:
-      self.assertEqual(float(grad[0, 2]), 0.)
+      self.assertTrue(np.all(np.isfinite(grad)))
+      self.assertTrue(np.all(np.abs(grad) > 0))
 
   def test_reset_action_stays_zero(self):
-    actions = tf.constant([[0., 0., 0., 0., 0., 0.],
-                           [1., 0., 0., .5, .7, .9]])
-    expected = [[0, 0, 0, 0, 0, 0], [1, 0, 0, .5, 0, 0]]
-    np.testing.assert_allclose(dreamer.canonicalize_action(actions, 3), expected)
+    actions = tf.constant([[0., 0., 0., 0.], [1., 0., .5, .7]])
+    expected = [[0, 0, 0, 0], [1, 0, .5, 0]]
+    np.testing.assert_allclose(dreamer.canonicalize_action(actions, 2), expected)
 
   def test_replay_actions_are_canonicalized(self):
-    action = tf.constant([[0.1, 0.9, 0.2, -0.4, 0.7, -0.8]])
-    actual = dreamer.canonicalize_action(action, 3).numpy()
-    expected = np.asarray([[0, 1, 0, 0, 0.7, 0]], np.float32)
+    action = tf.constant([[0.1, 0.9, -0.4, 0.7]])
+    actual = dreamer.canonicalize_action(action, 2).numpy()
+    expected = np.asarray([[0, 1, 0, 0.7]], np.float32)
     np.testing.assert_allclose(actual, expected)
 
+  def test_rssm_boundary_ignores_unexecuted_parameters(self):
+    rssm = models.RSSM(stoch=2, deter=8, hidden=8, discrete=3)
+    state = rssm.initial(1)
+    first = rssm.img_step(state, tf.constant([[1., 0., .2, .7]]))
+    second = rssm.img_step(state, tf.constant([[1., 0., .2, -.3]]))
+    np.testing.assert_allclose(first['logits'], second['logits'])
+    np.testing.assert_allclose(first['deter'], second['deter'])
+
   def test_random_prefill_only_populates_selected_parameter(self):
-    agent = dreamer.make_random_agent(3, seed=5)
+    agent = dreamer.make_random_agent(2, seed=5)
     actions, _ = agent({}, np.zeros(100, bool), None)
-    selections, parameters = actions[:, :3], actions[:, 3:]
+    selections, parameters = actions[:, :2], actions[:, 2:]
     np.testing.assert_allclose(selections.sum(-1), 1.0)
     np.testing.assert_allclose(parameters * (1.0 - selections), 0.0)
-    np.testing.assert_array_equal(parameters[:, 2], 0.)
+    self.assertEqual(set(selections.argmax(-1)), {0, 1})
 
 
 class ReturnAlignmentTest(unittest.TestCase):
@@ -214,26 +239,91 @@ class ReplayMaskTest(unittest.TestCase):
     reference_loss, reference_kl = rssm.kl_loss(short_post, short_prior)
     np.testing.assert_allclose([loss, kl], [reference_loss, reference_kl])
 
+  def test_priority_sampling_anchors_every_window_on_a_task_event(self):
+    with tempfile.TemporaryDirectory() as directory:
+      length = 30
+      episode = dict(
+          marker=np.arange(length, dtype=np.int32),
+          phase=np.r_[np.zeros(12), np.ones(length - 12)].astype(np.float32),
+          is_success=np.r_[np.zeros(length - 1), 1].astype(np.float32),
+          discount=np.r_[np.ones(length - 1), 0].astype(np.float32),
+          reward=np.zeros(length, np.float32))
+      tools.save_episodes(directory, [episode])
+      sampler = tools.load_episodes(
+          directory, 20, length=6, seed=3, priority_fraction=1.)
+      for _ in range(80):
+        sample = next(sampler)
+        indices = set(sample['marker'].tolist())
+        self.assertTrue(12 in indices or 29 in indices)
+
+
+class ReplayBootstrapTest(unittest.TestCase):
+
+  def test_behavior_targets_are_aligned_to_source_observations(self):
+    states = tf.constant([[[10.], [20.], [30.]]])
+    actions = tf.constant([[[0.], [1.], [2.]]])
+    inputs, targets, weights = dreamer.align_behavior_supervision(
+        states, actions, tf.constant([[0., 1., 1.]]),
+        tf.constant([[1., 1., 1.]]))
+    np.testing.assert_array_equal(inputs, [[[10.], [20.]]])
+    np.testing.assert_array_equal(targets, [[[1.], [2.]]])
+    np.testing.assert_array_equal(weights, [[1., 1.]])
+
+  def test_controller_bootstrap_supplies_pickup_success_and_terminal(self):
+    with tempfile.TemporaryDirectory() as directory:
+      config = argparse.Namespace(**dreamer.define_config())
+      config.demo_episodes = 2
+      config.demo_seed_start = 41000
+      datadir = pathlib.Path(directory) / 'episodes'
+      summary = dreamer.collect_controller_demonstrations(config, datadir)
+      self.assertEqual(summary['episodes'], 2)
+      episodes = [np.load(path) for path in datadir.glob('*.npz')]
+      self.assertEqual(len(episodes), 2)
+      for episode in episodes:
+        self.assertTrue(np.any(episode['phase'] > 0))
+        self.assertEqual(float(episode['is_success'][-1]), 1.)
+        self.assertEqual(float(episode['discount'][-1]), 0.)
+        self.assertEqual(episode['action'].shape[-1], 4)
+        canonical = uav_actions.canonicalize_numpy(episode['action'], 2)
+        np.testing.assert_array_equal(episode['action'], canonical)
+        self.assertEqual(float(episode['demonstration'][0]), 0.)
+        np.testing.assert_array_equal(episode['demonstration'][1:], 1.)
+        episode.close()
+
+  def test_clone_preserves_frequency_and_has_finite_turn_gradient(self):
+    logits = tf.Variable(np.tile([2., 0.], (10, 1)), dtype=tf.float32)
+    mean = tf.zeros([10, 2])
+    std = tf.ones([10, 2])
+    actions = np.zeros([10, 4], np.float32)
+    actions[:9, 0] = 1
+    actions[9, 1] = 1
+    with tf.GradientTape() as tape:
+      dist = models.HybridDist(logits, mean, std)
+      loss = dreamer.behavior_cloning_loss(
+          dist, tf.constant(actions), tf.ones(10))
+    gradient = tape.gradient(loss, logits).numpy()
+    self.assertTrue(np.isfinite(float(loss)))
+    self.assertTrue(np.all(np.isfinite(gradient)))
+
 
 class ExplorationTest(unittest.TestCase):
 
   def test_entropy_pushes_saturated_mean_back_towards_zero(self):
-    mean = tf.Variable([[20., 20., 20.]])
+    mean = tf.Variable([[20., 20.]])
     with tf.GradientTape() as tape:
-      dist = models.HybridDist(tf.zeros([1, 3]), mean, tf.ones([1, 3]) * .1)
+      dist = models.HybridDist(tf.zeros([1, 2]), mean, tf.ones([1, 2]) * .1)
       entropy = tf.reduce_sum(dist.entropy())
     gradient = tape.gradient(entropy, mean).numpy()
     self.assertTrue(np.all(np.isfinite(gradient)))
     self.assertTrue(np.all(gradient[:, :2] < -.5))
-    self.assertEqual(float(gradient[0, 2]), 0.)
 
   def test_mixture_keeps_all_actions_sampleable(self):
-    actor = models.HybridActionDecoder(3, layers=0, unimix=.01)
+    actor = models.HybridActionDecoder(2, layers=0, unimix=.01)
     actor(tf.zeros([1, 2]))
-    actor._modules['logits'].kernel.assign(tf.zeros([2, 3]))
-    actor._modules['logits'].bias.assign([1000., -1000., -1000.])
+    actor._modules['logits'].kernel.assign(tf.zeros([2, 2]))
+    actor._modules['logits'].bias.assign([1000., -1000.])
     probs = tf.nn.softmax(actor(tf.zeros([1, 2])).logits).numpy()[0]
-    np.testing.assert_allclose(probs, [.99333333, .00333333, .00333333], rtol=1e-5)
+    np.testing.assert_allclose(probs, [.995, .005], rtol=1e-5)
 
 
 class TrainingIntegrationTest(unittest.TestCase):
@@ -249,12 +339,12 @@ class TrainingIntegrationTest(unittest.TestCase):
         setattr(config, key, value)
       env = DreamerV2UAVEnv('relay', seed=7)
       observations = [env.reset()]
-      action = np.asarray([1, 0, 0, .5, 0, 0], np.float32)
+      action = np.asarray([1, 0, .5, 0], np.float32)
       observations.append(env.step(action)[0])
       observations.append(env.step(action)[0])
       episode = {key: np.stack([obs[key] for obs in observations])
                  for key in observations[0]}
-      episode.update(action=np.stack([np.zeros(6, np.float32), action, action]),
+      episode.update(action=np.stack([np.zeros(4, np.float32), action, action]),
                      reward=np.array([0, -1, -1], np.float32),
                      discount=np.array([1, 1, 0], np.float32))
       datadir = config.logdir / 'episodes'

@@ -36,6 +36,25 @@ efficiently learn a long-horizon policy.
 
 ## Instructions for this workstation
 
+Current UAV contract: **MOVE/TURN only**, with automatic relay pickup. After
+each movement step, an in-bounds UAV within 100 m of the relay picks up the
+supply immediately, updates the carried position, and switches to the delivery
+goal. No separate CATCH action or extra pickup step exists. Both tasks use
+`[select_MOVE, select_TURN, param_MOVE, param_TURN]` (4 channels).
+
+Use a **fresh log directory** for this `move_turn_autopickup_v3` contract. Old
+6-channel replay and checkpoints are rejected; historical experiment files
+are retained and their explicit-CATCH results are not comparable directly.
+`--reward_mode legacy` changes rewards/sampling only; it does not restore CATCH.
+
+Long-run hardening also requires `bounded_replay_uniform_demo_bc_v1` training
+provenance. Use a fresh directory for runs created before this change. Training
+no longer caches images; demonstrations are pinned, and online BC uses a
+separate uniform demo sampler. Checkpoints are atomic with a previous-copy
+backup and persisted warmup progress. See the
+[long-run engineering report](LONG_RUN_HARDENING_20260910.md) for validation
+and remaining limits.
+
 The supported GPU path is Ubuntu on WSL2. Native Windows TensorFlow can run
 the code on CPU, but does not provide current NVIDIA GPU support.
 
@@ -59,7 +78,7 @@ the launch if the check fails; without it, CPU fallback is allowed:
 
 ```bash
 CTM_REQUIRE_GPU=1 bash run_wsl.sh -u dreamer.py \
-  --logdir ./outputs/dreamerv2_uav_relay \
+  --logdir ./outputs/dreamerv2_uav_relay_autopickup_v3 \
   --task uav_relay
 ```
 
@@ -75,7 +94,7 @@ is `goal_safe_v1`; `--reward_mode legacy` selects the previous rules.
 
 ```bash
 python dreamer.py \
-  --logdir ./outputs/dreamerv2_uav_relay \
+  --logdir ./outputs/dreamerv2_uav_relay_autopickup_v3 \
   --task uav_relay \
   --action_repeat 1 \
   --time_limit 100
@@ -84,12 +103,13 @@ python dreamer.py \
 The adapter represents a hybrid action with `K` continuous selection channels
 followed by `K` parameter channels. The selected discrete action is the argmax
 of the first group, and only its matching parameter is passed to the benchmark.
-It renders the structured navigation state into the 64x64 RGB input. A
-normalized vector containing state, goals, and phase is also encoded and
-reconstructed by the world model, rather than merely being retained in replay.
+The environment still exposes a 64x64 RGB rendering for diagnostics, but the
+world model is intentionally vector-only: it encodes and reconstructs a
+13-value normalized control state with sin/cos heading, fixed and active goal
+offsets, remaining time, and task phase.
 
 UAV runs append episode and optimization records to `metrics.jsonl`, including
-return, length, success, relay, out-of-bounds, truncation, MOVE/TURN/CATCH
+return, length, success, relay, out-of-bounds, truncation, MOVE/TURN
 fractions, selected-parameter magnitude and saturation, losses, gradient
 norms, and categorical entropy. The resolved
 configuration and runtime provenance are appended to `run_metadata.jsonl`.
@@ -105,14 +125,28 @@ python run_batch.py --outdir ./outputs/goal_safe_batch --seeds 0 1 2 --steps 100
 
 The runner launches one seed at a time, requires a passing GPU check, records
 PIDs and status in `batch_status.json`, and stops the queue if a run fails.
+Resume an interrupted hardened batch without changing its settings:
+
+```bash
+python run_batch.py --resume --outdir ./outputs/goal_safe_batch
+```
+
+Completed seeds are skipped, logs are appended, and frozen source hashes are
+verified. Do not use this to resume batches created by an older runner.
 See `README_MIGRATION.md` for the reward definition and horizon semantics.
 
-The [2026-09-10 validation report](outputs/v2_corrected_validation_20260910/VALIDATION.md)
+The historical, explicit-CATCH [2026-09-10 validation report](outputs/v2_corrected_validation_20260910/VALIDATION.md)
 records a completed 20,044-step single-seed run and a fixed 100-episode
 checkpoint evaluation. All 22 engineering tests passed, but the learned policy
 achieved 0% pickup and delivery; this is not evidence of task learning.
 The hand-coded exact-state controller is a feasibility check, not a learned
 policy or a sample-efficiency comparison.
+
+The subsequent [engineering root-cause and fix report](ROOT_CAUSE_AND_FIX_20260910.md)
+documents the observation, replay, Actor timing/alignment, and action-constraint
+failures. Its final 6,212-step frozen-source probe achieved 62% pickup and 16%
+delivery success over the same 100 fixed seeds; 82% timeout means further
+optimization is still required and no convergence claim is made.
 
 Evaluate a locally retained frozen-source run without updating its weights:
 

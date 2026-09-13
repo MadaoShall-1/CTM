@@ -3,6 +3,7 @@ import io
 import pathlib
 import pickle
 import re
+import time
 import uuid
 
 try:
@@ -15,6 +16,7 @@ import tensorflow.compat.v1 as tf1
 import tensorflow_probability as tfp
 from tensorflow.keras import mixed_precision as prec
 from tensorflow_probability import distributions as tfd
+from run_support import atomic_write, require_free_space
 
 
 class AttrDict(dict):
@@ -186,28 +188,58 @@ def count_episodes(directory):
   return episodes, steps
 
 
-def save_episodes(directory, episodes):
+def save_episodes(directory, episodes, minimum_free_bytes=0):
   directory = pathlib.Path(directory).expanduser()
   directory.mkdir(parents=True, exist_ok=True)
+  require_free_space(directory, minimum_free_bytes)
   timestamp = datetime.datetime.now().strftime('%Y%m%dT%H%M%S')
+  filenames = []
   for episode in episodes:
+    episode = dict(episode)
+    episode.setdefault(
+        'demonstration', np.zeros(len(episode['reward']), np.float32))
     identifier = str(uuid.uuid4().hex)
     length = len(episode['reward'])
     filename = directory / f'{timestamp}-{identifier}-{length}.npz'
-    with io.BytesIO() as f1:
-      np.savez_compressed(f1, **episode)
-      f1.seek(0)
-      with filename.open('wb') as f2:
-        f2.write(f1.read())
+    atomic_write(filename, lambda stream: np.savez_compressed(stream, **episode))
+    filenames.append(filename)
+  return filenames
 
 
 def load_episodes(
-    directory, rescan, length=None, balance=False, seed=0, capacity=None):
+    directory, rescan, length=None, balance=False, seed=0, capacity=None,
+    priority_fraction=0.0, keys=None, pinned_directory=None, rescan_seconds=None,
+    statistics=None):
+  """Yield replay sequences, optionally anchored on rare task events.
+
+  ``priority_fraction`` is the probability that a sequence contains one of
+  success, pickup, or terminal.  The available event classes are chosen
+  uniformly before an occurrence is selected, so numerous failure terminals
+  cannot drown out a handful of pickup or success transitions.  Sampling
+  remains read-only and short episodes are still padded with a valid mask.
+  """
+  if rescan < 1:
+    raise ValueError('rescan must be at least 1')
+  if not 0.0 <= priority_fraction <= 1.0:
+    raise ValueError('priority_fraction must be in [0, 1]')
+  if capacity is not None and capacity < 1:
+    raise ValueError('capacity must be positive')
+  if rescan_seconds is not None and rescan_seconds <= 0:
+    raise ValueError('rescan_seconds must be positive')
   directory = pathlib.Path(directory).expanduser()
   random = np.random.RandomState(seed)
   cache = {}
+  events = {}
+  event_pools = dict(success=[], pickup=[], terminal=[])
+  requested_keys = None if keys is None else set(keys)
+  if statistics is not None:
+    statistics.update(scans=0, loaded_episodes=0, event_index_builds=0)
   while True:
+    scanned_at = time.monotonic()
     filenames = sorted(directory.glob('*.npz'), reverse=True)
+    pinned = sorted(pathlib.Path(pinned_directory).glob('*.npz')) if pinned_directory else []
+    pinned_names = {path.name for path in pinned}
+    filenames = [path for path in filenames if path.name not in pinned_names]
     if capacity:
       selected = []
       total = 0
@@ -218,23 +250,60 @@ def load_episodes(
         if total >= capacity:
           break
       filenames = selected
-      selected = set(filenames)
-      cache = {key: value for key, value in cache.items() if key in selected}
+    filenames += pinned
+    selected = set(filenames)
+    changed = selected != set(cache)
+    cache = {key: value for key, value in cache.items() if key in selected}
+    events = {key: value for key, value in events.items() if key in selected}
     for filename in filenames:
       if filename not in cache:
         try:
-          with filename.open('rb') as f:
-            episode = np.load(f)
-            episode = {k: episode[k] for k in episode.keys()}
+          with np.load(filename, allow_pickle=False) as archive:
+            episode = {k: archive[k] for k in archive.files
+                       if requested_keys is None or k in requested_keys}
+            episode.setdefault(
+                'demonstration', np.zeros(len(episode['reward']), np.float32))
         except Exception as e:
-          print(f'Could not load episode: {e}')
-          continue
+          raise RuntimeError(f'Cannot read finalized replay file: {filename}') from e
         cache[filename] = episode
-    keys = list(cache.keys())
-    if not keys:
+        if priority_fraction:
+          event = dict(success=[], pickup=[], terminal=[])
+          if 'is_success' in episode:
+            event['success'] = np.flatnonzero(episode['is_success'] > 0).tolist()
+          phase = episode.get('phase', episode.get('carrying_supply'))
+          if phase is not None:
+            event['pickup'] = (np.flatnonzero(np.diff(phase) > 0) + 1).tolist()
+          if 'discount' in episode:
+            event['terminal'] = np.flatnonzero(episode['discount'] <= 0).tolist()
+          events[filename] = event
+          if statistics is not None:
+            statistics['event_index_builds'] += 1
+        if statistics is not None:
+          statistics['loaded_episodes'] += 1
+    cache_keys = list(cache)
+    if not cache_keys:
       raise RuntimeError(f'No episodes found in {directory}.')
-    for index in random.choice(len(keys), rescan):
-      episode = cache[keys[index]]
+    if changed and priority_fraction:
+      event_pools = {name: [(key, index) for key, event in events.items()
+                           for index in event[name]] for name in event_pools}
+    available_events = [name for name, pool in event_pools.items() if pool]
+    if statistics is not None:
+      statistics.update(scans=statistics['scans'] + 1, cached_episodes=len(cache),
+          cached_bytes=sum(value.nbytes for ep in cache.values() for value in ep.values()),
+          cached_transitions=sum(len(ep['reward']) - 1 for ep in cache.values()),
+          pinned_episodes=len(pinned))
+    for _ in range(rescan):
+      # Always yield at least once, even if a slow cold scan exceeded the
+      # refresh interval. Otherwise mounted filesystems can busy-loop here.
+      if _ and rescan_seconds is not None and time.monotonic() - scanned_at >= rescan_seconds:
+        break
+      anchor = None
+      if available_events and random.uniform() < priority_fraction:
+        event_name = available_events[random.randint(len(available_events))]
+        key, anchor = event_pools[event_name][random.randint(len(event_pools[event_name]))]
+        episode = cache[key]
+      else:
+        episode = cache[cache_keys[random.randint(len(cache_keys))]]
       if length:
         total = len(next(iter(episode.values())))
         if total < length:
@@ -253,7 +322,12 @@ def load_episodes(
           yield episode
           continue
         available = total - length
-        if balance:
+        if anchor is not None:
+          # Choose uniformly among all crops that contain the selected event.
+          low = max(0, anchor - length + 1)
+          high = min(anchor, available)
+          index = int(random.randint(low, high + 1))
+        elif balance:
           index = min(random.randint(0, total), available)
         else:
           index = int(random.randint(0, available + 1))
@@ -469,6 +543,7 @@ class Adam(tf.Module):
     self._ensure_variables()
     assert len(loss.shape) == 0, loss.shape
     with tape:
+      loss = tf.debugging.check_numerics(loss, f'{self._name} loss is not finite')
       if self._loss_scale:
         loss *= self._loss_scale
     grads = tape.gradient(loss, self._variables)
@@ -476,13 +551,15 @@ class Adam(tf.Module):
       grads = [
           None if grad is None else grad / self._loss_scale
           for grad in grads]
-    norm = tf.linalg.global_norm(grads)
+    norm = tf.debugging.check_numerics(
+        tf.linalg.global_norm(grads), f'{self._name} gradient norm is not finite')
     if self._clip:
       grads, _ = tf.clip_by_global_norm(grads, self._clip, norm)
     if self._wd:
       context = tf.distribute.get_replica_context()
       context.merge_call(self._apply_weight_decay)
-    self._opt.apply_gradients(zip(grads, self._variables))
+    with tf.control_dependencies([loss, norm]):
+      self._opt.apply_gradients(zip(grads, self._variables))
     return norm
 
   def _apply_weight_decay(self, strategy):

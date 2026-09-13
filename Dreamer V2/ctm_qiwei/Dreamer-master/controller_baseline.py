@@ -6,29 +6,26 @@ import pathlib
 
 import numpy as np
 
-from envs import DreamerV2UAVEnv, MOVE, TURN, CATCH, wrap_angle
+from envs import DreamerV2UAVEnv, MOVE, TURN, wrap_angle
 
 
 def controller_action(env):
-  """Use exact UAV state/active goal to accelerate, brake, steer and pick up."""
+  """Navigate to the active goal; the environment performs automatic pickup."""
   base = env.unwrapped
   state = base.state
   delta = base.current_goal - state.position
   distance = float(np.linalg.norm(delta))
   radius = base.relay_radius if env.task == 'relay' and base.current_phase == 0 else base.goal_radius
-  if env.task == 'relay' and base.current_phase == 0 and distance <= radius:
-    selection, parameter = CATCH, 0.
+  error = wrap_angle(math.atan2(delta[1], delta[0]) - state.heading)
+  acceleration = base.dynamics.max_acceleration * base.dynamics.dt
+  target_speed = min(base.dynamics.max_speed,
+      math.sqrt(2 * base.dynamics.max_acceleration * max(0., distance - .6 * radius)))
+  if abs(error) > .5 and state.speed > 8:
+    selection, parameter = MOVE, -1.
+  elif abs(error) > .08:
+    selection, parameter = TURN, np.clip(error / base.dynamics.max_turn_angle, -1., 1.)
   else:
-    error = wrap_angle(math.atan2(delta[1], delta[0]) - state.heading)
-    acceleration = base.dynamics.max_acceleration * base.dynamics.dt
-    target_speed = min(base.dynamics.max_speed,
-        math.sqrt(2 * base.dynamics.max_acceleration * max(0., distance - .6 * radius)))
-    if abs(error) > .5 and state.speed > 8:
-      selection, parameter = MOVE, -1.
-    elif abs(error) > .08:
-      selection, parameter = TURN, np.clip(error / base.dynamics.max_turn_angle, -1., 1.)
-    else:
-      selection, parameter = MOVE, np.clip((target_speed - state.speed) / acceleration, -1., 1.)
+    selection, parameter = MOVE, np.clip((target_speed - state.speed) / acceleration, -1., 1.)
   action = np.zeros(2 * env.num_actions, np.float32)
   action[selection] = 1.
   action[env.num_actions + selection] = parameter

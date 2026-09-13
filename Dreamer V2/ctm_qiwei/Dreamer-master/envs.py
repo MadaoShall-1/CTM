@@ -1,8 +1,8 @@
 """Unified UAV environments module.
 
-Single-file environment implementation for the paper reconstruction.
-Direct and relay tasks follow the paper where specified; MultiRelay is an
-explicit extension and is not part of the original benchmark.
+Single-file environment implementation with MOVE/TURN control and automatic
+relay pickup. Relay semantics differ from the original explicit-pickup task;
+MultiRelay is an extension and is not part of the original benchmark.
 """
 
 from __future__ import annotations
@@ -25,7 +25,6 @@ import uav_actions
 
 MOVE = 0
 TURN = 1
-CATCH = 2
 
 
 @dataclass(frozen=True)
@@ -85,10 +84,8 @@ def advance(
 ) -> UAVState:
     """Apply one paper-style dynamics step.
 
-    ``MOVE`` changes speed, ``TURN`` changes heading, and ``CATCH`` changes
-    neither.  Every action then advances the UAV using its resulting speed and
-    heading, matching Eq. (5) and the paper's statement that an unsuccessful
-    CATCH advances one step.
+    ``MOVE`` changes speed and ``TURN`` changes heading. Every action then
+    advances the UAV using its resulting speed and heading.
     """
 
     parameter = clip_normalized_parameter(normalized_parameter)
@@ -99,7 +96,7 @@ def advance(
         speed += parameter * config.max_acceleration * config.dt
     elif discrete_action == TURN:
         heading += parameter * config.max_turn_angle
-    elif discrete_action != CATCH:
+    else:
         raise ValueError(f"Unknown discrete action: {discrete_action}")
 
     speed = float(np.clip(speed, config.min_speed, config.max_speed))
@@ -307,11 +304,11 @@ class DirectNavigationEnv(gym.Env):
 # ==============================================================================
 
 class RelayNavigationEnv(DirectNavigationEnv):
-    """Two-stage sparse task: reach/catch a supply, then deliver it.
+    """Two-stage task: automatically pick up at the relay, then deliver.
 
-    The paper requires an explicit CATCH action. The strict reproduction keeps
-    that behavior as the default. ``require_catch_action=False`` is retained
-    only as a non-paper ablation.
+    Pickup is checked at the post-motion position on each valid step. It does
+    not consume an extra action. Crossing the disk between two sampled
+    positions does not count unless the step ends within the relay radius.
     """
 
     def __init__(
@@ -323,7 +320,6 @@ class RelayNavigationEnv(DirectNavigationEnv):
         min_start_goal_distance: float = 0.0,
         boundary_mode: str = "terminate",
         dynamics: DynamicsConfig | None = None,
-        require_catch_action: bool = True,
     ) -> None:
         super().__init__(
             map_size=map_size,
@@ -336,10 +332,6 @@ class RelayNavigationEnv(DirectNavigationEnv):
         if relay_radius <= 0:
             raise ValueError("relay_radius must be positive")
         self.relay_radius = float(relay_radius)
-        self.require_catch_action = bool(require_catch_action)
-        self.action_space = spaces.Tuple(
-            (spaces.Discrete(3), spaces.Box(-1.0, 1.0, shape=(1,), dtype=np.float32))
-        )
         low = np.asarray(
             [0.0, 0.0, self.dynamics.min_speed, -math.pi, 0.0, 0.0, 0.0, 0.0],
             dtype=np.float32,
@@ -480,20 +472,16 @@ class RelayNavigationEnv(DirectNavigationEnv):
             raise ValueError(f"Invalid discrete action: {discrete_action}")
 
         was_phase = self.phase
-        at_relay_before_action = self._at_relay()
-        if self.phase == 0 and self.require_catch_action and discrete_action == CATCH and at_relay_before_action:
-            self.phase = 1
-
         self.state = advance(self.state, int(discrete_action), parameter, self.dynamics)
-        if self.phase == 1:
-            self.supply_position = self.state.position.copy()
         self.elapsed_steps += 1
         boundary_hit = self._handle_boundary()
-        if self.phase == 0 and not self.require_catch_action and self._at_relay():
-            self.phase = 1
-
-        is_success = self._at_goal()
         out_of_bounds = boundary_hit and self.boundary_mode == "terminate"
+        if self.phase == 0 and not out_of_bounds and self._at_relay():
+            self.phase = 1
+        if self.phase == 1:
+            self.supply_position = self.state.position.copy()
+
+        is_success = self._at_goal() and not out_of_bounds
         terminated = bool(is_success or out_of_bounds)
         truncated = bool(self.elapsed_steps >= self.max_episode_steps and not terminated)
         observation = self._get_obs()
@@ -511,7 +499,7 @@ class RelayNavigationEnv(DirectNavigationEnv):
 class MultiRelayNavigationEnv(DirectNavigationEnv):
     """Navigate through N ordered relay points and then the final goal.
 
-    Each relay requires a valid CATCH by default. Rewards remain -1 until the
+    Each relay is completed automatically on arrival. Rewards remain -1 until the
     final goal is reached; increasing N never changes reward density.
     """
 
@@ -525,7 +513,6 @@ class MultiRelayNavigationEnv(DirectNavigationEnv):
         min_start_goal_distance: float = 0.0,
         boundary_mode: str = "terminate",
         dynamics: DynamicsConfig | None = None,
-        require_catch_action: bool = True,
     ) -> None:
         if int(num_relays) != num_relays or num_relays < 0:
             raise ValueError("num_relays must be a non-negative integer")
@@ -541,15 +528,9 @@ class MultiRelayNavigationEnv(DirectNavigationEnv):
             raise ValueError("relay_radius must be positive")
         self.num_relays = int(num_relays)
         self.relay_radius = float(relay_radius)
-        self.require_catch_action = bool(require_catch_action)
         self.relay_goals = np.zeros((self.num_relays, 2), dtype=np.float32)
         self.final_goal = np.zeros(2, dtype=np.float32)
         self.phase = 0
-        num_actions = 3 if self.num_relays else 2
-        self.action_space = spaces.Tuple((
-            spaces.Discrete(num_actions),
-            spaces.Box(-1.0, 1.0, shape=(1,), dtype=np.float32),
-        ))
         # [x,y,v,theta,d_final,d_relay_1..d_relay_N,steps,phase]
         low = np.asarray(
             [0.0, 0.0, self.dynamics.min_speed, -math.pi, 0.0]
@@ -658,18 +639,13 @@ class MultiRelayNavigationEnv(DirectNavigationEnv):
         }
 
     def compute_reward(self, achieved_goal, desired_goal, info):
-        """Use CATCH-consistent virtual success for unfinished relay stages."""
+        """Use post-motion positional success for virtual relay goals."""
         if not isinstance(info, dict) or not info.get("is_her", False):
             return super().compute_reward(achieved_goal, desired_goal, info)
         source_phase = int(info.get("her_source_phase", info.get("phase", 0)))
-        if source_phase >= self.num_relays or not self.require_catch_action:
+        if source_phase >= self.num_relays:
             return super().compute_reward(achieved_goal, desired_goal, info)
-        before = np.asarray(
-            info.get("her_achieved_goal_before", achieved_goal), dtype=np.float32)
-        success = (
-            int(info.get("her_source_action", -1)) == CATCH
-            and distance(before, desired_goal) <= self.relay_radius
-        )
+        success = distance(achieved_goal, desired_goal) <= self.relay_radius
         rewards = np.where(success, 0.0, -1.0)
         return float(rewards) if np.ndim(rewards) == 0 else rewards.astype(np.float32)
 
@@ -678,18 +654,13 @@ class MultiRelayNavigationEnv(DirectNavigationEnv):
         if not self.action_space.spaces[0].contains(discrete_action):
             raise ValueError(f"Invalid discrete action: {discrete_action}")
         previous_phase = self.phase
-        if (
-            self.require_catch_action and discrete_action == CATCH
-            and self._at_current_relay()
-        ):
-            self.phase += 1
         self.state = advance(self.state, int(discrete_action), parameter, self.dynamics)
         self.elapsed_steps += 1
         boundary_hit = self._handle_boundary()
-        if not self.require_catch_action and self._at_current_relay():
-            self.phase += 1
-        success = self._at_goal()
         out_of_bounds = boundary_hit and self.boundary_mode == "terminate"
+        if not out_of_bounds and self._at_current_relay():
+            self.phase += 1
+        success = self._at_goal() and not out_of_bounds
         terminated = bool(success or out_of_bounds)
         truncated = bool(self.elapsed_steps >= self.max_episode_steps and not terminated)
         obs = self._get_obs()
@@ -805,7 +776,7 @@ class DreamerV2UAVEnv:
             budget = .7 * self.env.dynamics.max_speed * self.env.dynamics.dt * max_episode_steps
             if budget <= 2 * self.env.goal_radius * self.env.num_phases:
                 raise ValueError('Episode horizon is too short for the minimum goal separation')
-        self.num_actions = 2 if task == "direct" else 3
+        self.num_actions = uav_actions.NUM_ACTIONS
         self.last_obs = None
 
     @property
@@ -817,14 +788,16 @@ class DreamerV2UAVEnv:
     @property
     def observation_space(self):
         base = self.env.observation_space.spaces
-        vector_size = int(np.prod(base["observation"].shape)) + 5
         result = {
             "image": spaces.Box(0, 255, self.size + (3,), dtype=np.uint8),
             "state": base["observation"],
             "achieved_goal": base["achieved_goal"],
             "desired_goal": base["desired_goal"],
             "phase": spaces.Box(0, self.env.num_phases - 1, shape=(), dtype=np.float32),
-            "vector": spaces.Box(-1.0, 1.0, shape=(vector_size,), dtype=np.float32),
+            # vector_v2 is the control observation consumed by Dreamer.  It
+            # uses sin/cos for the circular heading and keeps both fixed task
+            # goals visible across the relay phase switch.
+            "vector": spaces.Box(-1.0, 1.0, shape=(13,), dtype=np.float32),
         }
         for key in ("is_success", "out_of_bounds", "terminated", "truncated",
                     "relay_reached", "carrying_supply"):
@@ -903,8 +876,8 @@ class DreamerV2UAVEnv:
         else:
             points.append(self.env.current_goal)
         legs = [float(distance(a, b)) for a, b in zip(points, points[1:])]
-        # Necessary geometric budget with headroom for acceleration, turns and
-        # CATCH. This is not a proof that every sampled task is controllable.
+        # Necessary geometric budget with headroom for acceleration and turns.
+        # This is not a proof that every sampled task is controllable.
         budget = .7 * self.env.dynamics.max_speed * self.env.dynamics.dt * self.env.max_episode_steps
         separation = min(float(distance(a, b)) for i, a in enumerate(points) for b in points[i+1:])
         return separation > 2 * self.env.goal_radius and sum(legs) <= budget
@@ -940,16 +913,35 @@ class DreamerV2UAVEnv:
         return out
 
     def _vector_observation(self, obs):
-        state_space = self.env.observation_space["observation"]
-        state = np.asarray(obs["observation"], np.float32).reshape(-1)
-        state = 2.0 * (state - state_space.low.reshape(-1)) / (
-            state_space.high.reshape(-1) - state_space.low.reshape(-1)) - 1.0
-        achieved = 2.0 * np.asarray(obs["achieved_goal"], np.float32) / self.env.map_size - 1.0
-        desired = 2.0 * np.asarray(obs["desired_goal"], np.float32) / self.env.map_size - 1.0
-        phase = 0.0 if self.env.num_phases <= 1 else (
+        """Topology-safe, Markov control state.
+
+        [x, y, speed, sin(heading), cos(heading), final_dx, final_dy,
+         supply_dx, supply_dy, elapsed, phase, active_dx, active_dy]
+
+        The old vector encoded heading as a scalar in [-1, 1].  Physically
+        adjacent angles at -pi and +pi were therefore maximally separated,
+        which made the learned TURN response discontinuous.  Relative fixed
+        goals avoid hiding the pickup location after a phase change.
+        """
+        state = self.env.state
+        position = np.asarray(state.position, np.float32)
+        scale = float(self.env.map_size)
+        final = self.env.final_goal if self.task == "relay" else self.env.goal
+        supply = self.env.relay_goal if self.task == "relay" else position
+        active = self.env.current_goal
+        phase = -1.0 if self.env.num_phases <= 1 else (
             2.0 * self.env.current_phase / (self.env.num_phases - 1) - 1.0)
-        parts = [state, achieved, desired, np.asarray([phase], np.float32)]
-        return np.clip(np.concatenate(parts), -1.0, 1.0).astype(np.float32)
+        vector = np.asarray([
+            *(2.0 * position / scale - 1.0),
+            2.0 * state.speed / self.env.dynamics.max_speed - 1.0,
+            np.sin(state.heading), np.cos(state.heading),
+            *((np.asarray(final) - position) / scale),
+            *((np.asarray(supply) - position) / scale),
+            2.0 * self.env.elapsed_steps / self.env.max_episode_steps - 1.0,
+            phase,
+            *((np.asarray(active) - position) / scale),
+        ], dtype=np.float32)
+        return np.clip(vector, -1.0, 1.0)
 
     def _render(self, obs):
         height, width = self.size
@@ -977,7 +969,7 @@ class DreamerV2UAVEnv:
 
 
 __all__ = [
-    "DynamicsConfig", "UAVState", "MOVE", "TURN", "CATCH",
+    "DynamicsConfig", "UAVState", "MOVE", "TURN",
     "advance", "distance", "wrap_angle", "clip_normalized_parameter",
     "DirectNavigationEnv", "RelayNavigationEnv", "MultiRelayNavigationEnv",
     "GoalObservationEncoder", "DreamerV2UAVEnv",
