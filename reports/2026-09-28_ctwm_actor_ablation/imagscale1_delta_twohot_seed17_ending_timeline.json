@@ -1,0 +1,930 @@
+[
+  {
+    "checkpoint": "checkpoint_env0010990_ac001992.pkl",
+    "env_steps": 10990,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.1581521753095956,
+      "intercept": -0.010755372762277298,
+      "steps": 8978
+    },
+    "ordinary": {
+      "steps": 8878,
+      "actual_mean": -0.007009295281022787,
+      "predicted_mean": -0.013159975409507751,
+      "end_prob_mean": 0.015214714221656322,
+      "end_prob_median": 0.004937797784805298,
+      "tail_mass_mean": 0.008871976302160198,
+      "tail_mass_median": 0.005320777218742023,
+      "actual_std": 0.0014322338392958045,
+      "full_prediction": {
+        "rmse": 0.00872730277478695,
+        "corr": 0.03394180950138295
+      },
+      "body_prediction": {
+        "rmse": 0.001411863485741426,
+        "corr": 0.18163157192225288
+      },
+      "tail_vs_end_prob_corr": 0.7853246131233539
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007124435156583786,
+      "predicted_mean": -0.01790287159383297,
+      "end_prob_mean": 0.02837175317108631,
+      "end_prob_median": 0.018264025449752808,
+      "tail_mass_mean": 0.01582867188640142,
+      "tail_mass_median": 0.017122304662297694
+    },
+    "timeout_ending": {
+      "steps": 78,
+      "actual_mean": -0.701054573059082,
+      "predicted_mean": -0.025274749845266342,
+      "end_prob_mean": 0.08933044224977493,
+      "end_prob_median": 0.08723798394203186,
+      "tail_mass_mean": 0.026088786123813826,
+      "tail_mass_median": 0.02293811919915001
+    },
+    "early_ending": {
+      "steps": 22,
+      "actual_mean": -0.6598852872848511,
+      "predicted_mean": -0.013051166199147701,
+      "end_prob_mean": 0.01911497302353382,
+      "end_prob_median": 0.00927695631980896,
+      "tail_mass_mean": 0.00909080137915641,
+      "tail_mass_median": 0.005383194539353653
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0020420_ac003878.pkl",
+    "env_steps": 20420,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.3952419671929678,
+      "intercept": -0.012551695162380316,
+      "steps": 9282
+    },
+    "ordinary": {
+      "steps": 9182,
+      "actual_mean": -0.007005088496953249,
+      "predicted_mean": -0.017447292804718018,
+      "end_prob_mean": 0.01270191092044115,
+      "end_prob_median": 0.004495352506637573,
+      "tail_mass_mean": 0.015315801372755369,
+      "tail_mass_median": 0.008353401170468011,
+      "actual_std": 0.0014091822085902095,
+      "full_prediction": {
+        "rmse": 0.016486650332808495,
+        "corr": 0.09731575769485591
+      },
+      "body_prediction": {
+        "rmse": 0.001282988534976915,
+        "corr": 0.43110099572841065
+      },
+      "tail_vs_end_prob_corr": 0.7028057905703764
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007328443694859743,
+      "predicted_mean": -0.030473260208964348,
+      "end_prob_mean": 0.022497864440083504,
+      "end_prob_median": 0.01685863733291626,
+      "tail_mass_mean": 0.03366916499600838,
+      "tail_mass_median": 0.027770952804445415
+    },
+    "timeout_ending": {
+      "steps": 82,
+      "actual_mean": -0.7135272026062012,
+      "predicted_mean": -0.033734969794750214,
+      "end_prob_mean": 0.02340179868042469,
+      "end_prob_median": 0.017786532640457153,
+      "tail_mass_mean": 0.03846415223462489,
+      "tail_mass_median": 0.036130717452991234
+    },
+    "early_ending": {
+      "steps": 18,
+      "actual_mean": -0.6830407977104187,
+      "predicted_mean": -0.03575313463807106,
+      "end_prob_mean": 0.03527165576815605,
+      "end_prob_median": 0.02657020092010498,
+      "tail_mass_mean": 0.04092010285294196,
+      "tail_mass_median": 0.03690431599375188
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0029450_ac005684.pkl",
+    "env_steps": 29450,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.15689522482079274,
+      "intercept": -0.01023519986027053,
+      "steps": 9040
+    },
+    "ordinary": {
+      "steps": 8940,
+      "actual_mean": -0.007004206534475088,
+      "predicted_mean": -0.012831136584281921,
+      "end_prob_mean": 0.016317404806613922,
+      "end_prob_median": 0.003205537796020508,
+      "tail_mass_mean": 0.008524438829540197,
+      "tail_mass_median": 0.0030960590836131008,
+      "actual_std": 0.0010975333862006664,
+      "full_prediction": {
+        "rmse": 0.011617572978138924,
+        "corr": 0.043782611945818235
+      },
+      "body_prediction": {
+        "rmse": 0.0010193087979200547,
+        "corr": 0.40704919778993437
+      },
+      "tail_vs_end_prob_corr": 0.7477794815044373
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.0070912959054112434,
+      "predicted_mean": -0.032923661172389984,
+      "end_prob_mean": 0.11400891095399857,
+      "end_prob_median": 0.10238420963287354,
+      "tail_mass_mean": 0.03743454040286177,
+      "tail_mass_median": 0.03144203703866255
+    },
+    "timeout_ending": {
+      "steps": 83,
+      "actual_mean": -0.6960139870643616,
+      "predicted_mean": -0.049380313605070114,
+      "end_prob_mean": 0.2876279652118683,
+      "end_prob_median": 0.2539244294166565,
+      "tail_mass_mean": 0.060686961255851365,
+      "tail_mass_median": 0.05244235776037698
+    },
+    "early_ending": {
+      "steps": 17,
+      "actual_mean": -0.6592755913734436,
+      "predicted_mean": -0.02531014010310173,
+      "end_prob_mean": 0.0299582127481699,
+      "end_prob_median": 0.01315760612487793,
+      "tail_mass_mean": 0.02670410960285284,
+      "tail_mass_median": 0.007303344846064874
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0037925_ac007379.pkl",
+    "env_steps": 37925,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.2906188825584118,
+      "intercept": -0.011292559182181207,
+      "steps": 8569
+    },
+    "ordinary": {
+      "steps": 8469,
+      "actual_mean": -0.0068938168697059155,
+      "predicted_mean": -0.01526608970016241,
+      "end_prob_mean": 0.013361621648073196,
+      "end_prob_median": 0.0018584728240966797,
+      "tail_mass_mean": 0.01233232939498176,
+      "tail_mass_median": 0.004208755334030145,
+      "actual_std": 0.0015174794243648648,
+      "full_prediction": {
+        "rmse": 0.01761668361723423,
+        "corr": 0.10808950273301204
+      },
+      "body_prediction": {
+        "rmse": 0.001273845312343108,
+        "corr": 0.5470526435269493
+      },
+      "tail_vs_end_prob_corr": 0.7284300461934816
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007359733805060387,
+      "predicted_mean": -0.0582844503223896,
+      "end_prob_mean": 0.15323399007320404,
+      "end_prob_median": 0.1464059054851532,
+      "tail_mass_mean": 0.07361568553600908,
+      "tail_mass_median": 0.06530326536863008
+    },
+    "timeout_ending": {
+      "steps": 74,
+      "actual_mean": -0.6967311501502991,
+      "predicted_mean": -0.05676496401429176,
+      "end_prob_mean": 0.19752436876296997,
+      "end_prob_median": 0.1654980480670929,
+      "tail_mass_mean": 0.07098980829186571,
+      "tail_mass_median": 0.06042456099668958
+    },
+    "early_ending": {
+      "steps": 26,
+      "actual_mean": -0.6503162980079651,
+      "predicted_mean": -0.02763102576136589,
+      "end_prob_mean": 0.040675606578588486,
+      "end_prob_median": 0.022861003875732422,
+      "tail_mass_mean": 0.028519412144856555,
+      "tail_mass_median": 0.016515341131361327
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0045820_ac008958.pkl",
+    "env_steps": 45820,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.3531861351477713,
+      "intercept": -0.009787203893100366,
+      "steps": 9305
+    },
+    "ordinary": {
+      "steps": 9205,
+      "actual_mean": -0.007003731094300747,
+      "predicted_mean": -0.011394632048904896,
+      "end_prob_mean": 0.004786230623722076,
+      "end_prob_median": -0.0003129243850708008,
+      "tail_mass_mean": 0.0065325962572598435,
+      "tail_mass_median": 0.0017041931121166698,
+      "actual_std": 0.001506179105490446,
+      "full_prediction": {
+        "rmse": 0.012002570554614067,
+        "corr": 0.12343324600968442
+      },
+      "body_prediction": {
+        "rmse": 0.0011297989529951173,
+        "corr": 0.6628253419155079
+      },
+      "tail_vs_end_prob_corr": 0.8082541529909764
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007324527483433485,
+      "predicted_mean": -0.06166442856192589,
+      "end_prob_mean": 0.1504812091588974,
+      "end_prob_median": 0.12061244249343872,
+      "tail_mass_mean": 0.07759590445162097,
+      "tail_mass_median": 0.06410374575950994
+    },
+    "timeout_ending": {
+      "steps": 88,
+      "actual_mean": -0.7076196074485779,
+      "predicted_mean": -0.05606430396437645,
+      "end_prob_mean": 0.10728916525840759,
+      "end_prob_median": 0.085347980260849,
+      "tail_mass_mean": 0.06994443075791994,
+      "tail_mass_median": 0.061675001967232634
+    },
+    "early_ending": {
+      "steps": 12,
+      "actual_mean": -0.6923128962516785,
+      "predicted_mean": -0.021769776940345764,
+      "end_prob_mean": 0.027737215161323547,
+      "end_prob_median": 0.016354531049728394,
+      "tail_mass_mean": 0.019813557849488815,
+      "tail_mass_median": 0.008158160726597918
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0053570_ac010508.pkl",
+    "env_steps": 53570,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.2527031724161495,
+      "intercept": -0.009332497211573667,
+      "steps": 6967
+    },
+    "ordinary": {
+      "steps": 6867,
+      "actual_mean": -0.007161309011280537,
+      "predicted_mean": -0.012889339588582516,
+      "end_prob_mean": 0.01491006650030613,
+      "end_prob_median": 0.0023424625396728516,
+      "tail_mass_mean": 0.008994359620711571,
+      "tail_mass_median": 0.00225136491064952,
+      "actual_std": 0.0015638269251212478,
+      "full_prediction": {
+        "rmse": 0.01730235666036606,
+        "corr": 0.18806684326363746
+      },
+      "body_prediction": {
+        "rmse": 0.0012049201725577254,
+        "corr": 0.6499373255870988
+      },
+      "tail_vs_end_prob_corr": 0.5600710938788714
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007753895595669746,
+      "predicted_mean": -0.023865889757871628,
+      "end_prob_mean": 0.051697488874197006,
+      "end_prob_median": 0.017761915922164917,
+      "tail_mass_mean": 0.024899868240258794,
+      "tail_mass_median": 0.017103248186487147
+    },
+    "timeout_ending": {
+      "steps": 52,
+      "actual_mean": -0.6894201636314392,
+      "predicted_mean": -0.11294884234666824,
+      "end_prob_mean": 0.2451694756746292,
+      "end_prob_median": 0.23690161108970642,
+      "tail_mass_mean": 0.15229403938009892,
+      "tail_mass_median": 0.14563117718213592
+    },
+    "early_ending": {
+      "steps": 48,
+      "actual_mean": -0.6566264629364014,
+      "predicted_mean": -0.020330937579274178,
+      "end_prob_mean": 0.10268265008926392,
+      "end_prob_median": 0.06337139010429382,
+      "tail_mass_mean": 0.019018766678664315,
+      "tail_mass_median": 0.01179868477650814
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0062005_ac012195.pkl",
+    "env_steps": 62005,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.30862687190822913,
+      "intercept": -0.008889785595492233,
+      "steps": 7652
+    },
+    "ordinary": {
+      "steps": 7552,
+      "actual_mean": -0.007165807764977217,
+      "predicted_mean": -0.011861970648169518,
+      "end_prob_mean": 0.010462961159646511,
+      "end_prob_median": 0.0011589527130126953,
+      "tail_mass_mean": 0.007804296802038844,
+      "tail_mass_median": 0.001402145202064679,
+      "actual_std": 0.0015118048759177327,
+      "full_prediction": {
+        "rmse": 0.01351005956530571,
+        "corr": 0.3633801388625009
+      },
+      "body_prediction": {
+        "rmse": 0.0011048285154202301,
+        "corr": 0.7248097833554626
+      },
+      "tail_vs_end_prob_corr": 0.5797190387534842
+    },
+    "one_before_ending": {
+      "steps": 99,
+      "actual_mean": -0.007601816672831774,
+      "predicted_mean": -0.03466572239995003,
+      "end_prob_mean": 0.05280767381191254,
+      "end_prob_median": 0.029094934463500977,
+      "tail_mass_mean": 0.04168747556701355,
+      "tail_mass_median": 0.023994515143510753
+    },
+    "timeout_ending": {
+      "steps": 59,
+      "actual_mean": -0.7080128192901611,
+      "predicted_mean": -0.08593224734067917,
+      "end_prob_mean": 0.149037703871727,
+      "end_prob_median": 0.1220632791519165,
+      "tail_mass_mean": 0.11628122367668355,
+      "tail_mass_median": 0.09112348831549189
+    },
+    "early_ending": {
+      "steps": 41,
+      "actual_mean": -0.625049889087677,
+      "predicted_mean": -0.03814277425408363,
+      "end_prob_mean": 0.08617591857910156,
+      "end_prob_median": 0.07864850759506226,
+      "tail_mass_mean": 0.046724887545364795,
+      "tail_mass_median": 0.024324118656071647
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0071080_ac014010.pkl",
+    "env_steps": 71080,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.34481374248183244,
+      "intercept": -0.010537084497515725,
+      "steps": 7883
+    },
+    "ordinary": {
+      "steps": 7783,
+      "actual_mean": -0.006884763482958078,
+      "predicted_mean": -0.014189873822033405,
+      "end_prob_mean": 0.011094191111624241,
+      "end_prob_median": 0.0008859634399414062,
+      "tail_mass_mean": 0.01158343826735571,
+      "tail_mass_median": 0.0010357872151667454,
+      "actual_std": 0.0014278098242357373,
+      "full_prediction": {
+        "rmse": 0.027826324105262756,
+        "corr": 0.22780141471576862
+      },
+      "body_prediction": {
+        "rmse": 0.0007381122844013308,
+        "corr": 0.8770471310571949
+      },
+      "tail_vs_end_prob_corr": 0.5143542461379879
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.007489477284252644,
+      "predicted_mean": -0.0885484516620636,
+      "end_prob_mean": 0.16262120008468628,
+      "end_prob_median": 0.10271236300468445,
+      "tail_mass_mean": 0.12018121778710027,
+      "tail_mass_median": 0.050671848248564244
+    },
+    "timeout_ending": {
+      "steps": 61,
+      "actual_mean": -0.7220832705497742,
+      "predicted_mean": -0.16864275932312012,
+      "end_prob_mean": 0.3965025246143341,
+      "end_prob_median": 0.38505303859710693,
+      "tail_mass_mean": 0.23246699662085704,
+      "tail_mass_median": 0.17039810808465966
+    },
+    "early_ending": {
+      "steps": 39,
+      "actual_mean": -0.6742764711380005,
+      "predicted_mean": -0.0519229993224144,
+      "end_prob_mean": 0.11711633950471878,
+      "end_prob_median": 0.07549065351486206,
+      "tail_mass_mean": 0.06640969842262558,
+      "tail_mass_median": 0.028083739912710737
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0080050_ac015804.pkl",
+    "env_steps": 80050,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.3990415697929308,
+      "intercept": -0.008758786528135422,
+      "steps": 8803
+    },
+    "ordinary": {
+      "steps": 8703,
+      "actual_mean": -0.006836941931396723,
+      "predicted_mean": -0.0118420934304595,
+      "end_prob_mean": 0.0074941604398190975,
+      "end_prob_median": 0.0003876686096191406,
+      "tail_mass_mean": 0.007147304128680321,
+      "tail_mass_median": 0.0004569081805387235,
+      "actual_std": 0.0015213682781904936,
+      "full_prediction": {
+        "rmse": 0.0224612969905138,
+        "corr": 0.1804336931971458
+      },
+      "body_prediction": {
+        "rmse": 0.0007006837508808232,
+        "corr": 0.8878948176409995
+      },
+      "tail_vs_end_prob_corr": 0.6906451079134183
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.0068908510729670525,
+      "predicted_mean": -0.05659325048327446,
+      "end_prob_mean": 0.0870937928557396,
+      "end_prob_median": 0.06143254041671753,
+      "tail_mass_mean": 0.06887119857175303,
+      "tail_mass_median": 0.027610515761486903
+    },
+    "timeout_ending": {
+      "steps": 72,
+      "actual_mean": -0.7282084822654724,
+      "predicted_mean": -0.18089011311531067,
+      "end_prob_mean": 0.4599086344242096,
+      "end_prob_median": 0.42963913083076477,
+      "tail_mass_mean": 0.2377566832931913,
+      "tail_mass_median": 0.17230913271429435
+    },
+    "early_ending": {
+      "steps": 28,
+      "actual_mean": -0.6814959645271301,
+      "predicted_mean": -0.03861457481980324,
+      "end_prob_mean": 0.07371655851602554,
+      "end_prob_median": 0.020669221878051758,
+      "tail_mass_mean": 0.04657194000280383,
+      "tail_mass_median": 0.02005245706274275
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0088655_ac017525.pkl",
+    "env_steps": 88655,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.66138729942718,
+      "intercept": -0.007592561780459531,
+      "steps": 8555
+    },
+    "ordinary": {
+      "steps": 8455,
+      "actual_mean": -0.006816493347287178,
+      "predicted_mean": -0.011257113888859749,
+      "end_prob_mean": 0.006341048050671816,
+      "end_prob_median": 0.002617776393890381,
+      "tail_mass_mean": 0.006880423654156581,
+      "tail_mass_median": 0.0004440661645223681,
+      "actual_std": 0.0013839553575962782,
+      "full_prediction": {
+        "rmse": 0.021017394959926605,
+        "corr": 0.177302683767617
+      },
+      "body_prediction": {
+        "rmse": 0.0006677366514843669,
+        "corr": 0.9005696543095892
+      },
+      "tail_vs_end_prob_corr": 0.4445590265135311
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006700931582599878,
+      "predicted_mean": -0.028746137395501137,
+      "end_prob_mean": 0.01720724254846573,
+      "end_prob_median": 0.002308279275894165,
+      "tail_mass_mean": 0.03227555642096668,
+      "tail_mass_median": 0.008873123345454577
+    },
+    "timeout_ending": {
+      "steps": 74,
+      "actual_mean": -0.758725106716156,
+      "predicted_mean": -0.15383560955524445,
+      "end_prob_mean": 0.12758298218250275,
+      "end_prob_median": 0.08698529005050659,
+      "tail_mass_mean": 0.19822733270984,
+      "tail_mass_median": 0.11426527867022568
+    },
+    "early_ending": {
+      "steps": 26,
+      "actual_mean": -0.6883271932601929,
+      "predicted_mean": -0.0349775031208992,
+      "end_prob_mean": 0.0473480299115181,
+      "end_prob_median": 0.019748389720916748,
+      "tail_mass_mean": 0.04122530659151888,
+      "tail_mass_median": 0.022952563078771308
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0097130_ac019220.pkl",
+    "env_steps": 97130,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.4568133091844847,
+      "intercept": -0.008420748048272397,
+      "steps": 9003
+    },
+    "ordinary": {
+      "steps": 8903,
+      "actual_mean": -0.006618754006922245,
+      "predicted_mean": -0.013820834457874298,
+      "end_prob_mean": 0.011337718926370144,
+      "end_prob_median": 0.0004462599754333496,
+      "tail_mass_mean": 0.010089307510206121,
+      "tail_mass_median": 0.00024118030748815605,
+      "actual_std": 0.0014703789493069053,
+      "full_prediction": {
+        "rmse": 0.045335326343774796,
+        "corr": 0.11767688500418783
+      },
+      "body_prediction": {
+        "rmse": 0.0005817331575133748,
+        "corr": 0.9210854299604357
+      },
+      "tail_vs_end_prob_corr": 0.644450027702476
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.00678462628275156,
+      "predicted_mean": -0.179409459233284,
+      "end_prob_mean": 0.2598557472229004,
+      "end_prob_median": 0.15510043501853943,
+      "tail_mass_mean": 0.23533133081528804,
+      "tail_mass_median": 0.0968800991815071
+    },
+    "timeout_ending": {
+      "steps": 80,
+      "actual_mean": -0.733755350112915,
+      "predicted_mean": -0.3124202787876129,
+      "end_prob_mean": 0.7091981172561646,
+      "end_prob_median": 0.7462735772132874,
+      "tail_mass_mean": 0.41805796090768615,
+      "tail_mass_median": 0.36414378742721915
+    },
+    "early_ending": {
+      "steps": 20,
+      "actual_mean": -0.7009945511817932,
+      "predicted_mean": -0.03058313950896263,
+      "end_prob_mean": 0.08886364847421646,
+      "end_prob_median": 0.04288572072982788,
+      "tail_mass_mean": 0.03317763678731718,
+      "tail_mass_median": 0.007975952053868167
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0105465_ac020887.pkl",
+    "env_steps": 105465,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.6148531155279691,
+      "intercept": -0.007773734494581792,
+      "steps": 9284
+    },
+    "ordinary": {
+      "steps": 9184,
+      "actual_mean": -0.006760360673069954,
+      "predicted_mean": -0.010086371563374996,
+      "end_prob_mean": 0.004336214158684015,
+      "end_prob_median": 0.00078582763671875,
+      "tail_mass_mean": 0.005013245889841508,
+      "tail_mass_median": 0.0002391461316527886,
+      "actual_std": 0.0014306295197457075,
+      "full_prediction": {
+        "rmse": 0.023463532328605652,
+        "corr": 0.08495724777618215
+      },
+      "body_prediction": {
+        "rmse": 0.0005625873744650346,
+        "corr": 0.9280325659376221
+      },
+      "tail_vs_end_prob_corr": 0.4936548896158329
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006464204750955105,
+      "predicted_mean": -0.03582222759723663,
+      "end_prob_mean": 0.0071526262909173965,
+      "end_prob_median": 0.00273740291595459,
+      "tail_mass_mean": 0.04111389472021666,
+      "tail_mass_median": 0.005603139184889042
+    },
+    "timeout_ending": {
+      "steps": 86,
+      "actual_mean": -0.7342724800109863,
+      "predicted_mean": -0.28673699498176575,
+      "end_prob_mean": 0.3909691274166107,
+      "end_prob_median": 0.3273065984249115,
+      "tail_mass_mean": 0.38600992349091257,
+      "tail_mass_median": 0.2659669414535661
+    },
+    "early_ending": {
+      "steps": 14,
+      "actual_mean": -0.7047556638717651,
+      "predicted_mean": -0.017000960186123848,
+      "end_prob_mean": 0.02324344776570797,
+      "end_prob_median": 0.010280519723892212,
+      "tail_mass_mean": 0.014550968143128413,
+      "tail_mass_median": 0.0012909589350695362
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0113775_ac022549.pkl",
+    "env_steps": 113775,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.5340724196984472,
+      "intercept": -0.008958722344932307,
+      "steps": 9007
+    },
+    "ordinary": {
+      "steps": 8907,
+      "actual_mean": -0.006690171081572771,
+      "predicted_mean": -0.0129328528419137,
+      "end_prob_mean": 0.007752434350550175,
+      "end_prob_median": -0.0004391670227050781,
+      "tail_mass_mean": 0.008992108605383077,
+      "tail_mass_median": 0.00014536872974682937,
+      "actual_std": 0.0013459998881444335,
+      "full_prediction": {
+        "rmse": 0.04481798782944679,
+        "corr": 0.0233508668089729
+      },
+      "body_prediction": {
+        "rmse": 0.00042415855821966244,
+        "corr": 0.9503947405921276
+      },
+      "tail_vs_end_prob_corr": 0.6332756989067825
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006151530891656876,
+      "predicted_mean": -0.0768505334854126,
+      "end_prob_mean": 0.04389728233218193,
+      "end_prob_median": 0.018583714962005615,
+      "tail_mass_mean": 0.09822670499122158,
+      "tail_mass_median": 0.01706712301866154
+    },
+    "timeout_ending": {
+      "steps": 85,
+      "actual_mean": -0.7172430157661438,
+      "predicted_mean": -0.5082781910896301,
+      "end_prob_mean": 0.8987058997154236,
+      "end_prob_median": 0.9614769816398621,
+      "tail_mass_mean": 0.6957978898184985,
+      "tail_mass_median": 0.8648502246530868
+    },
+    "early_ending": {
+      "steps": 15,
+      "actual_mean": -0.6669155359268188,
+      "predicted_mean": -0.015482344664633274,
+      "end_prob_mean": 0.03265479579567909,
+      "end_prob_median": 0.009391486644744873,
+      "tail_mass_mean": 0.01176727552208877,
+      "tail_mass_median": 0.003607419390927712
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0121920_ac024178.pkl",
+    "env_steps": 121920,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.4910303835322548,
+      "intercept": -0.0077206440794626,
+      "steps": 8745
+    },
+    "ordinary": {
+      "steps": 8645,
+      "actual_mean": -0.006824486888945103,
+      "predicted_mean": -0.009220326319336891,
+      "end_prob_mean": 0.0033006274607032537,
+      "end_prob_median": 0.00021600723266601562,
+      "tail_mass_mean": 0.00353450977173292,
+      "tail_mass_median": 0.00018857776970469163,
+      "actual_std": 0.001425284892320633,
+      "full_prediction": {
+        "rmse": 0.013578983023762703,
+        "corr": 0.14379749544310988
+      },
+      "body_prediction": {
+        "rmse": 0.0004901434450114613,
+        "corr": 0.9415750872258358
+      },
+      "tail_vs_end_prob_corr": 0.5705851620317334
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006487746722996235,
+      "predicted_mean": -0.04218417778611183,
+      "end_prob_mean": 0.05703529343008995,
+      "end_prob_median": 0.030764222145080566,
+      "tail_mass_mean": 0.05239751657586558,
+      "tail_mass_median": 0.005735220218644503
+    },
+    "timeout_ending": {
+      "steps": 78,
+      "actual_mean": -0.7119763493537903,
+      "predicted_mean": -0.15159575641155243,
+      "end_prob_mean": 0.2700410783290863,
+      "end_prob_median": 0.19717010855674744,
+      "tail_mass_mean": 0.2071419933227243,
+      "tail_mass_median": 0.06206760030104976
+    },
+    "early_ending": {
+      "steps": 22,
+      "actual_mean": -0.7215443253517151,
+      "predicted_mean": -0.029782485216856003,
+      "end_prob_mean": 0.02949989028275013,
+      "end_prob_median": 0.011515915393829346,
+      "tail_mass_mean": 0.03183759109857828,
+      "tail_mass_median": 0.006563571065665285
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0130090_ac025812.pkl",
+    "env_steps": 130090,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.5317044959597317,
+      "intercept": -0.008424612238624517,
+      "steps": 9074
+    },
+    "ordinary": {
+      "steps": 8974,
+      "actual_mean": -0.006943417247384787,
+      "predicted_mean": -0.010190051980316639,
+      "end_prob_mean": 0.0033885089214891195,
+      "end_prob_median": -0.0007605552673339844,
+      "tail_mass_mean": 0.004658345870079612,
+      "tail_mass_median": 0.0003048996062425415,
+      "actual_std": 0.0013292307266965508,
+      "full_prediction": {
+        "rmse": 0.02252236194908619,
+        "corr": 0.0593378819855211
+      },
+      "body_prediction": {
+        "rmse": 0.00041252671795675674,
+        "corr": 0.9507146008987737
+      },
+      "tail_vs_end_prob_corr": 0.5755347999021088
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006425278726965189,
+      "predicted_mean": -0.03226790949702263,
+      "end_prob_mean": 0.02817567065358162,
+      "end_prob_median": 0.008892208337783813,
+      "tail_mass_mean": 0.03756015870825392,
+      "tail_mass_median": 0.00644406972797807
+    },
+    "timeout_ending": {
+      "steps": 82,
+      "actual_mean": -0.7158377766609192,
+      "predicted_mean": -0.42924830317497253,
+      "end_prob_mean": 0.7801031470298767,
+      "end_prob_median": 0.8514313697814941,
+      "tail_mass_mean": 0.581156073118719,
+      "tail_mass_median": 0.6770096451996355
+    },
+    "early_ending": {
+      "steps": 18,
+      "actual_mean": -0.6857345104217529,
+      "predicted_mean": -0.03571641817688942,
+      "end_prob_mean": 0.06908733397722244,
+      "end_prob_median": 0.0252191424369812,
+      "tail_mass_mean": 0.04280734783946524,
+      "tail_mass_median": 0.018013798942253707
+    },
+    "tail_threshold": 4.0
+  },
+  {
+    "checkpoint": "checkpoint_env0137680_ac027330.pkl",
+    "env_steps": 137680,
+    "episodes": 100,
+    "twohot": true,
+    "reward_vs_end_prob": {
+      "slope": -0.6263790905232469,
+      "intercept": -0.00889659198209182,
+      "steps": 8927
+    },
+    "ordinary": {
+      "steps": 8827,
+      "actual_mean": -0.006917902734130621,
+      "predicted_mean": -0.010577844455838203,
+      "end_prob_mean": 0.002483353717252612,
+      "end_prob_median": -0.00021195411682128906,
+      "tail_mass_mean": 0.005585047043829146,
+      "tail_mass_median": 0.00024720343526422385,
+      "actual_std": 0.0013973854947835207,
+      "full_prediction": {
+        "rmse": 0.026215599849820137,
+        "corr": 0.05826758258447517
+      },
+      "body_prediction": {
+        "rmse": 0.0005064697607368381,
+        "corr": 0.9333139063631777
+      },
+      "tail_vs_end_prob_corr": 0.6615671675652702
+    },
+    "one_before_ending": {
+      "steps": 100,
+      "actual_mean": -0.006522064097225666,
+      "predicted_mean": -0.021969137713313103,
+      "end_prob_mean": 0.007717180997133255,
+      "end_prob_median": 0.0017532408237457275,
+      "tail_mass_mean": 0.022669331116031338,
+      "tail_mass_median": 0.0023353778960652
+    },
+    "timeout_ending": {
+      "steps": 83,
+      "actual_mean": -0.7265834808349609,
+      "predicted_mean": -0.39711862802505493,
+      "end_prob_mean": 0.6426199674606323,
+      "end_prob_median": 0.8025063872337341,
+      "tail_mass_mean": 0.5460097511454842,
+      "tail_mass_median": 0.6638726403199331
+    },
+    "early_ending": {
+      "steps": 17,
+      "actual_mean": -0.7039722800254822,
+      "predicted_mean": -0.03299978747963905,
+      "end_prob_mean": 0.031230270862579346,
+      "end_prob_median": 0.01036149263381958,
+      "tail_mass_mean": 0.03704270927674782,
+      "tail_mass_median": 0.021194277810519323
+    },
+    "tail_threshold": 4.0
+  }
+]

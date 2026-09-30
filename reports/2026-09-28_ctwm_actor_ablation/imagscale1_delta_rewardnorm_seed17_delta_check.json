@@ -1,0 +1,35 @@
+{
+  "checkpoint": "checkpoint_env0137680_ac027330.pkl",
+  "heldout": {
+    "steps": 527,
+    "actual_step_median_m": 22.115835189819336,
+    "absolute_decoder": {
+      "median_m": 243.18275451660156,
+      "mean_m": 232.41143798828125
+    },
+    "constant_velocity": {
+      "median_m": 1.6597341299057007,
+      "mean_m": 2.710134744644165
+    },
+    "motion_head": {
+      "median_m": 2.721686363220215,
+      "mean_m": 3.3672850131988525
+    }
+  },
+  "in_distribution_last_100_training_episodes": {
+    "steps": 5300,
+    "actual_step_median_m": 11.130064964294434,
+    "absolute_decoder": {
+      "median_m": 189.33291625976562,
+      "mean_m": 198.3196258544922
+    },
+    "constant_velocity": {
+      "median_m": 2.545431613922119,
+      "mean_m": 3.9682772159576416
+    },
+    "motion_head": {
+      "median_m": 1.6580829620361328,
+      "mean_m": 2.0183565616607666
+    }
+  }
+}

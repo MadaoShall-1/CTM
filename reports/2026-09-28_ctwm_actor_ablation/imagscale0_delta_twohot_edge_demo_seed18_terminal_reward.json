@@ -1,0 +1,29 @@
+{
+  "checkpoint": "checkpoint_env0137680_ac027336.pkl",
+  "episodes": 100,
+  "terminal": {
+    "steps": 100,
+    "actual_mean": -0.7540661096572876,
+    "predicted_mean": -0.24139825999736786
+  },
+  "1_before_terminal": {
+    "steps": 100,
+    "actual_mean": -0.00773266889154911,
+    "predicted_mean": -0.015344635583460331
+  },
+  "2_before_terminal": {
+    "steps": 100,
+    "actual_mean": -0.007658975664526224,
+    "predicted_mean": -0.009949205443263054
+  },
+  "3_before_terminal": {
+    "steps": 100,
+    "actual_mean": -0.007581878453493118,
+    "predicted_mean": -0.1379963755607605
+  },
+  "other": {
+    "steps": 8878,
+    "actual_mean": -0.006115733180195093,
+    "predicted_mean": -0.008069549687206745
+  }
+}

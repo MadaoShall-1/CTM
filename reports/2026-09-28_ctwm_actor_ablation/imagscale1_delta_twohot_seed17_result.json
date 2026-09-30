@@ -1,0 +1,881 @@
+{
+  "status": "completed",
+  "env_steps": 137680,
+  "policy_env_steps": 136650,
+  "model_updates": 27380,
+  "ac_updates": 27330,
+  "prefill_steps": 1030,
+  "warmup_updates": 50,
+  "episodes": 1595,
+  "stop_reason": "environment_step_target",
+  "target_env_steps": 137680,
+  "before": {
+    "episodes": [
+      {
+        "scene": 70000,
+        "length": 100,
+        "return_": -1.4294297330792327,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70001,
+        "length": 100,
+        "return_": -1.7432035500550271,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70002,
+        "length": 62,
+        "return_": -1.15684019048738,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70003,
+        "length": 100,
+        "return_": -1.7306181983876359,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70004,
+        "length": 13,
+        "return_": -0.823599119644933,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70005,
+        "length": 100,
+        "return_": -1.4286216463332673,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70006,
+        "length": 100,
+        "return_": -1.3625928096517126,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70007,
+        "length": 100,
+        "return_": -1.2062292294241075,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70008,
+        "length": 100,
+        "return_": -1.1529751905153374,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70009,
+        "length": 76,
+        "return_": -1.1731908889832932,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70010,
+        "length": 100,
+        "return_": -1.4577025899620804,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70011,
+        "length": 59,
+        "return_": -1.153741362068486,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70012,
+        "length": 100,
+        "return_": -1.480352869784393,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70013,
+        "length": 68,
+        "return_": -1.1097660646066616,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70014,
+        "length": 100,
+        "return_": -1.1256398019513068,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70015,
+        "length": 100,
+        "return_": -1.4271381613166148,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70016,
+        "length": 100,
+        "return_": -1.1669111950606688,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70017,
+        "length": 100,
+        "return_": -1.4237757661788337,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70018,
+        "length": 50,
+        "return_": -1.048948315911149,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70019,
+        "length": 100,
+        "return_": -1.7666561971273738,
+        "success": false,
+        "pickup": true,
+        "timeout": true,
+        "oob": false
+      }
+    ],
+    "count": 20,
+    "success": 0.0,
+    "pickup": 0.05,
+    "timeout": 0.7,
+    "oob": 0.3,
+    "length": 86.4,
+    "return_": -1.3183966440264747
+  },
+  "after": {
+    "episodes": [
+      {
+        "scene": 70000,
+        "length": 100,
+        "return_": -1.4277858159825711,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70001,
+        "length": 100,
+        "return_": -1.6919076170974037,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70002,
+        "length": 100,
+        "return_": -1.4340973384573017,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70003,
+        "length": 34,
+        "return_": -1.1700482724112062,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70004,
+        "length": 12,
+        "return_": -0.8163775578290251,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70005,
+        "length": 100,
+        "return_": -1.4385938051880591,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70006,
+        "length": 20,
+        "return_": -0.8169722032978877,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70007,
+        "length": 100,
+        "return_": -1.2386951500540389,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70008,
+        "length": 100,
+        "return_": -1.1880076033075901,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70009,
+        "length": 100,
+        "return_": -1.3341847492933554,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70010,
+        "length": 100,
+        "return_": -1.4761509681196612,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70011,
+        "length": 48,
+        "return_": -1.0738084587646894,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70012,
+        "length": 100,
+        "return_": -1.5002512569509139,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70013,
+        "length": 100,
+        "return_": -1.3322215571279648,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70014,
+        "length": 50,
+        "return_": -0.8793192564509669,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70015,
+        "length": 41,
+        "return_": -1.0128566245315298,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70016,
+        "length": 100,
+        "return_": -1.2234056286950898,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70017,
+        "length": 68,
+        "return_": -1.1669553162150725,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 70018,
+        "length": 100,
+        "return_": -1.3941684822399112,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 70019,
+        "length": 100,
+        "return_": -1.7114772270432133,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      }
+    ],
+    "count": 20,
+    "success": 0.0,
+    "pickup": 0.0,
+    "timeout": 0.65,
+    "oob": 0.35,
+    "length": 78.65,
+    "return_": -1.2663642444528729
+  },
+  "fresh": {
+    "episodes": [
+      {
+        "scene": 71000,
+        "length": 100,
+        "return_": -1.2257700362001585,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71001,
+        "length": 100,
+        "return_": -1.3288075553658196,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71002,
+        "length": 100,
+        "return_": -1.4817574246647611,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71003,
+        "length": 100,
+        "return_": -1.4665105028317071,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71004,
+        "length": 100,
+        "return_": -1.163421075955241,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71005,
+        "length": 14,
+        "return_": -0.7962075733007767,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71006,
+        "length": 100,
+        "return_": -1.4414000629356187,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71007,
+        "length": 100,
+        "return_": -1.713464899096256,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71008,
+        "length": 100,
+        "return_": -1.4883249506309326,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71009,
+        "length": 100,
+        "return_": -1.395635733774086,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71010,
+        "length": 100,
+        "return_": -1.1566448674416105,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71011,
+        "length": 100,
+        "return_": -1.7325254445161125,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71012,
+        "length": 32,
+        "return_": -0.9280703523993932,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71013,
+        "length": 100,
+        "return_": -1.4105064021532172,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71014,
+        "length": 39,
+        "return_": -0.7942412484408783,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71015,
+        "length": 56,
+        "return_": -1.4052811263275509,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71016,
+        "length": 100,
+        "return_": -1.5546247828358193,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71017,
+        "length": 100,
+        "return_": -1.1039395362091717,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71018,
+        "length": 37,
+        "return_": -0.8950129956443751,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71019,
+        "length": 100,
+        "return_": -1.3325643310675575,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71020,
+        "length": 100,
+        "return_": -1.6125825402148468,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71021,
+        "length": 100,
+        "return_": -1.1931379860455193,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71022,
+        "length": 100,
+        "return_": -1.3019466412675542,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71023,
+        "length": 46,
+        "return_": -1.1116781016898938,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71024,
+        "length": 35,
+        "return_": -1.074399273496662,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71025,
+        "length": 100,
+        "return_": -1.4490601034593722,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71026,
+        "length": 100,
+        "return_": -1.1860117516909021,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71027,
+        "length": 100,
+        "return_": -1.4011238807841306,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71028,
+        "length": 100,
+        "return_": -1.2536730104522953,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71029,
+        "length": 100,
+        "return_": -1.5322636220863046,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71030,
+        "length": 100,
+        "return_": -1.2839446843096836,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71031,
+        "length": 100,
+        "return_": -1.3261705246193878,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71032,
+        "length": 100,
+        "return_": -1.491910768357105,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71033,
+        "length": 100,
+        "return_": -1.4088145284436813,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71034,
+        "length": 100,
+        "return_": -1.3754556466478824,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71035,
+        "length": 100,
+        "return_": -1.3929513766349206,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71036,
+        "length": 100,
+        "return_": -1.4918346064528047,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71037,
+        "length": 100,
+        "return_": -1.4716799827396236,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71038,
+        "length": 100,
+        "return_": -1.4790764903621993,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71039,
+        "length": 100,
+        "return_": -1.1168072862196396,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71040,
+        "length": 100,
+        "return_": -1.325635938146867,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71041,
+        "length": 100,
+        "return_": -1.5716588737381052,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71042,
+        "length": 100,
+        "return_": -1.3534913173453997,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71043,
+        "length": 100,
+        "return_": -1.2475543724026323,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71044,
+        "length": 46,
+        "return_": -0.9009956881872534,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71045,
+        "length": 100,
+        "return_": -1.4462841291867883,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71046,
+        "length": 100,
+        "return_": -1.621155833811515,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71047,
+        "length": 41,
+        "return_": -1.1347629972657194,
+        "success": false,
+        "pickup": false,
+        "timeout": false,
+        "oob": true
+      },
+      {
+        "scene": 71048,
+        "length": 100,
+        "return_": -1.2928423324997753,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      },
+      {
+        "scene": 71049,
+        "length": 100,
+        "return_": -1.514828772190186,
+        "success": false,
+        "pickup": false,
+        "timeout": true,
+        "oob": false
+      }
+    ],
+    "count": 50,
+    "success": 0.0,
+    "pickup": 0.0,
+    "timeout": 0.82,
+    "oob": 0.18,
+    "length": 88.92,
+    "return_": -1.323568879250794
+  },
+  "latest_train": {
+    "model_loss": 129.74798583984375,
+    "vector_nll": 12.063196182250977,
+    "reward_nll": 2.4383323192596436,
+    "discount_bce": 0.05976830795407295,
+    "kl": 1.9251670837402344,
+    "delta_nll": 4.692763805389404,
+    "actor_loss": 0.062055036425590515,
+    "actor_score": -0.02612558752298355,
+    "imagined_return": -0.7016310691833496,
+    "actor_entropy_bonus": 0.034233659505844116,
+    "imagined_discount": 0.9811698794364929,
+    "critic_loss": 0.9210718274116516,
+    "actor_gradient_norm": 0.09329027682542801,
+    "critic_gradient_norm": 0.23296493291854858,
+    "model_gradient_norm": 28.817007064819336
+  },
+  "elapsed_seconds": 4756.170026749955,
+  "checkpoint": "outputs/mac_ablation_20260928/imagscale1_delta_twohot_seed17/checkpoint_env0137680_ac027330.pkl",
+  "checkpoint_restore_verified": true,
+  "optimizer_iterations": {
+    "world": 27380,
+    "actor": 27330,
+    "critic": 27330
+  },
+  "scope": "Online world+Actor+Critic integration; not a convergence or matched-baseline claim"
+}

@@ -1,0 +1,1011 @@
+{
+  "controller": "exact_state_feedback",
+  "task": "relay",
+  "episodes": 100,
+  "success_rate": 1.0,
+  "pickup_rate": 1.0,
+  "out_of_bounds_rate": 0.0,
+  "mean_length": 58.78,
+  "records": [
+    {
+      "seed": 60000,
+      "length": 59,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7936865518634155,
+      "discounted_return": 0.39353799227247305
+    },
+    {
+      "seed": 60001,
+      "length": 77,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8074552889945155,
+      "discounted_return": 0.3392813572312089
+    },
+    {
+      "seed": 60002,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7914350971949902,
+      "discounted_return": 0.3977713503619136
+    },
+    {
+      "seed": 60003,
+      "length": 76,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7960470973519946,
+      "discounted_return": 0.3360331640180291
+    },
+    {
+      "seed": 60004,
+      "length": 62,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8021332141873369,
+      "discounted_return": 0.3912052631335151
+    },
+    {
+      "seed": 60005,
+      "length": 31,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8201066066530301,
+      "discounted_return": 0.5804208946976489
+    },
+    {
+      "seed": 60006,
+      "length": 52,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8104770933554454,
+      "discounted_return": 0.4517096907312155
+    },
+    {
+      "seed": 60007,
+      "length": 63,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8219880686739512,
+      "discounted_return": 0.39582268529241593
+    },
+    {
+      "seed": 60008,
+      "length": 72,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8129438673987583,
+      "discounted_return": 0.35569370695026775
+    },
+    {
+      "seed": 60009,
+      "length": 59,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7862436092708085,
+      "discounted_return": 0.3920550166325165
+    },
+    {
+      "seed": 60010,
+      "length": 40,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7981125604545751,
+      "discounted_return": 0.5075151275546205
+    },
+    {
+      "seed": 60011,
+      "length": 66,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7893860361849929,
+      "discounted_return": 0.3682774367453445
+    },
+    {
+      "seed": 60012,
+      "length": 69,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8212834559593403,
+      "discounted_return": 0.37506811905342086
+    },
+    {
+      "seed": 60013,
+      "length": 65,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8223635501003943,
+      "discounted_return": 0.3906407851624921
+    },
+    {
+      "seed": 60014,
+      "length": 54,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7876453455985162,
+      "discounted_return": 0.41408301010250426
+    },
+    {
+      "seed": 60015,
+      "length": 50,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8389512095911862,
+      "discounted_return": 0.4800753411315003
+    },
+    {
+      "seed": 60016,
+      "length": 56,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8016943900094919,
+      "discounted_return": 0.42842831013602567
+    },
+    {
+      "seed": 60017,
+      "length": 31,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8208896872489333,
+      "discounted_return": 0.5807125886529204
+    },
+    {
+      "seed": 60018,
+      "length": 55,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7892300638900664,
+      "discounted_return": 0.4114709123076463
+    },
+    {
+      "seed": 60019,
+      "length": 46,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7864529026638428,
+      "discounted_return": 0.46162695409960286
+    },
+    {
+      "seed": 60020,
+      "length": 67,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.78667587326297,
+      "discounted_return": 0.36873506152448937
+    },
+    {
+      "seed": 60021,
+      "length": 62,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7967239336684665,
+      "discounted_return": 0.3993272400222889
+    },
+    {
+      "seed": 60022,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7982321725930887,
+      "discounted_return": 0.39856400782773205
+    },
+    {
+      "seed": 60023,
+      "length": 64,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7986619134086365,
+      "discounted_return": 0.3747657511964176
+    },
+    {
+      "seed": 60024,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.79836034819962,
+      "discounted_return": 0.39439673244924606
+    },
+    {
+      "seed": 60025,
+      "length": 80,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8169317553306082,
+      "discounted_return": 0.330830817766557
+    },
+    {
+      "seed": 60026,
+      "length": 43,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7988024328220292,
+      "discounted_return": 0.49539438796897706
+    },
+    {
+      "seed": 60027,
+      "length": 80,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.833203406519941,
+      "discounted_return": 0.34208477349829586
+    },
+    {
+      "seed": 60028,
+      "length": 48,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8093617781722623,
+      "discounted_return": 0.4650994162654125
+    },
+    {
+      "seed": 60029,
+      "length": 54,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7952195663856451,
+      "discounted_return": 0.4278854299889451
+    },
+    {
+      "seed": 60030,
+      "length": 62,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8126126347484368,
+      "discounted_return": 0.3928355221157047
+    },
+    {
+      "seed": 60031,
+      "length": 77,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8220774283594156,
+      "discounted_return": 0.35397861742604664
+    },
+    {
+      "seed": 60032,
+      "length": 62,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8057182850308899,
+      "discounted_return": 0.39406994329147654
+    },
+    {
+      "seed": 60033,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7972878441025462,
+      "discounted_return": 0.4053289802747772
+    },
+    {
+      "seed": 60034,
+      "length": 77,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8198713040385098,
+      "discounted_return": 0.34140792131707287
+    },
+    {
+      "seed": 60035,
+      "length": 51,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7917574913827861,
+      "discounted_return": 0.4432130828365186
+    },
+    {
+      "seed": 60036,
+      "length": 69,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8144266651664498,
+      "discounted_return": 0.3712458301285124
+    },
+    {
+      "seed": 60037,
+      "length": 72,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8107016930508341,
+      "discounted_return": 0.3579615931281115
+    },
+    {
+      "seed": 60038,
+      "length": 61,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7917855201578866,
+      "discounted_return": 0.3896891024223408
+    },
+    {
+      "seed": 60039,
+      "length": 63,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8084792003196115,
+      "discounted_return": 0.39783049372051715
+    },
+    {
+      "seed": 60040,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7924906777072046,
+      "discounted_return": 0.39119351801445207
+    },
+    {
+      "seed": 60041,
+      "length": 56,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7786372865113553,
+      "discounted_return": 0.4086213683326
+    },
+    {
+      "seed": 60042,
+      "length": 76,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8048847668677328,
+      "discounted_return": 0.3403903793955386
+    },
+    {
+      "seed": 60043,
+      "length": 83,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8420849967261104,
+      "discounted_return": 0.3348496833918399
+    },
+    {
+      "seed": 60044,
+      "length": 40,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8029877867515599,
+      "discounted_return": 0.5115048062287252
+    },
+    {
+      "seed": 60045,
+      "length": 33,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8515716169601251,
+      "discounted_return": 0.592833614168901
+    },
+    {
+      "seed": 60046,
+      "length": 44,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7845272835086385,
+      "discounted_return": 0.47497911976522134
+    },
+    {
+      "seed": 60047,
+      "length": 52,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7997337089298394,
+      "discounted_return": 0.4359607688853425
+    },
+    {
+      "seed": 60048,
+      "length": 47,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7898821051665097,
+      "discounted_return": 0.45821683203437713
+    },
+    {
+      "seed": 60049,
+      "length": 46,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8080240709096289,
+      "discounted_return": 0.4822775018280258
+    },
+    {
+      "seed": 60050,
+      "length": 69,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8074445470712809,
+      "discounted_return": 0.3623579998208741
+    },
+    {
+      "seed": 60051,
+      "length": 50,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7822814671856262,
+      "discounted_return": 0.43769925692308
+    },
+    {
+      "seed": 60052,
+      "length": 23,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8665465428978072,
+      "discounted_return": 0.6788549789269261
+    },
+    {
+      "seed": 60053,
+      "length": 55,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7992726655713244,
+      "discounted_return": 0.431042662558089
+    },
+    {
+      "seed": 60054,
+      "length": 77,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8384887823790388,
+      "discounted_return": 0.3607691989725965
+    },
+    {
+      "seed": 60055,
+      "length": 76,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8167897954355338,
+      "discounted_return": 0.35025572526961285
+    },
+    {
+      "seed": 60056,
+      "length": 70,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8096037946531929,
+      "discounted_return": 0.3716514468738721
+    },
+    {
+      "seed": 60057,
+      "length": 49,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8044988770138737,
+      "discounted_return": 0.4558717367938854
+    },
+    {
+      "seed": 60058,
+      "length": 57,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8085709918281891,
+      "discounted_return": 0.41950533350198027
+    },
+    {
+      "seed": 60059,
+      "length": 44,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.835630763274264,
+      "discounted_return": 0.5146015487299017
+    },
+    {
+      "seed": 60060,
+      "length": 60,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8024195210521818,
+      "discounted_return": 0.3955495573263006
+    },
+    {
+      "seed": 60061,
+      "length": 76,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8402650026166987,
+      "discounted_return": 0.3627617269776465
+    },
+    {
+      "seed": 60062,
+      "length": 57,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7988136235230625,
+      "discounted_return": 0.41598749452892625
+    },
+    {
+      "seed": 60063,
+      "length": 45,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8006280300608979,
+      "discounted_return": 0.4775847385730714
+    },
+    {
+      "seed": 60064,
+      "length": 44,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8420308280371618,
+      "discounted_return": 0.5167221407759192
+    },
+    {
+      "seed": 60065,
+      "length": 31,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8249204378987857,
+      "discounted_return": 0.5867351399801739
+    },
+    {
+      "seed": 60066,
+      "length": 55,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7989420150884124,
+      "discounted_return": 0.4267643946341611
+    },
+    {
+      "seed": 60067,
+      "length": 43,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8083089763707142,
+      "discounted_return": 0.49578205265853165
+    },
+    {
+      "seed": 60068,
+      "length": 73,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8277646597477732,
+      "discounted_return": 0.3677252338569458
+    },
+    {
+      "seed": 60069,
+      "length": 52,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7892240885535728,
+      "discounted_return": 0.43045333971233724
+    },
+    {
+      "seed": 60070,
+      "length": 73,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8160125388674107,
+      "discounted_return": 0.3583561121645969
+    },
+    {
+      "seed": 60071,
+      "length": 63,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7879218013748001,
+      "discounted_return": 0.37629118561947617
+    },
+    {
+      "seed": 60072,
+      "length": 80,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8154364206027425,
+      "discounted_return": 0.33241175212334684
+    },
+    {
+      "seed": 60073,
+      "length": 76,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8022591899353672,
+      "discounted_return": 0.33221749990335675
+    },
+    {
+      "seed": 60074,
+      "length": 50,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.786153790879986,
+      "discounted_return": 0.439155485161447
+    },
+    {
+      "seed": 60075,
+      "length": 53,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7838341445881475,
+      "discounted_return": 0.4245318640622116
+    },
+    {
+      "seed": 60076,
+      "length": 72,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8131117958993181,
+      "discounted_return": 0.3598291422391652
+    },
+    {
+      "seed": 60077,
+      "length": 62,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7976707550405745,
+      "discounted_return": 0.3947923281366609
+    },
+    {
+      "seed": 60078,
+      "length": 36,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8205205072911919,
+      "discounted_return": 0.5516924700824206
+    },
+    {
+      "seed": 60079,
+      "length": 70,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8212939776174302,
+      "discounted_return": 0.36671789458498777
+    },
+    {
+      "seed": 60080,
+      "length": 66,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8084581346696845,
+      "discounted_return": 0.3748008140158311
+    },
+    {
+      "seed": 60081,
+      "length": 72,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8103446133918979,
+      "discounted_return": 0.3667889423709618
+    },
+    {
+      "seed": 60082,
+      "length": 48,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7950431868706069,
+      "discounted_return": 0.4525849231475155
+    },
+    {
+      "seed": 60083,
+      "length": 48,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8215062184940769,
+      "discounted_return": 0.4740542850131174
+    },
+    {
+      "seed": 60084,
+      "length": 63,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7834833813203461,
+      "discounted_return": 0.3823970487907684
+    },
+    {
+      "seed": 60085,
+      "length": 49,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7994301664443887,
+      "discounted_return": 0.45260272202484647
+    },
+    {
+      "seed": 60086,
+      "length": 72,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.825702513689974,
+      "discounted_return": 0.3622933990135907
+    },
+    {
+      "seed": 60087,
+      "length": 80,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8371779487029981,
+      "discounted_return": 0.35147523700603167
+    },
+    {
+      "seed": 60088,
+      "length": 54,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7962130944367152,
+      "discounted_return": 0.42648101337721445
+    },
+    {
+      "seed": 60089,
+      "length": 59,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7920838003557096,
+      "discounted_return": 0.4035730908166585
+    },
+    {
+      "seed": 60090,
+      "length": 49,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8508542700318431,
+      "discounted_return": 0.49703910063758094
+    },
+    {
+      "seed": 60091,
+      "length": 49,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7991358416356285,
+      "discounted_return": 0.455818786865164
+    },
+    {
+      "seed": 60092,
+      "length": 53,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.7870545016904912,
+      "discounted_return": 0.42939634137530924
+    },
+    {
+      "seed": 60093,
+      "length": 43,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.818475110910028,
+      "discounted_return": 0.5027670950436638
+    },
+    {
+      "seed": 60094,
+      "length": 55,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8466489099364913,
+      "discounted_return": 0.4644466281566457
+    },
+    {
+      "seed": 60095,
+      "length": 67,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8033193219256087,
+      "discounted_return": 0.3650574772290345
+    },
+    {
+      "seed": 60096,
+      "length": 54,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8004010861578693,
+      "discounted_return": 0.4271762084474877
+    },
+    {
+      "seed": 60097,
+      "length": 49,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.816738148608005,
+      "discounted_return": 0.46413691586125705
+    },
+    {
+      "seed": 60098,
+      "length": 75,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8051485897822459,
+      "discounted_return": 0.3399373391041685
+    },
+    {
+      "seed": 60099,
+      "length": 80,
+      "success": true,
+      "pickup": true,
+      "out_of_bounds": false,
+      "timeout": false,
+      "episode_return": 0.8192521258797125,
+      "discounted_return": 0.3385309080734845
+    }
+  ]
+}

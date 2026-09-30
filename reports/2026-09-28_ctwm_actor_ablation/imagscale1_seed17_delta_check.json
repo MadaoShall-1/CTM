@@ -1,0 +1,27 @@
+{
+  "checkpoint": "checkpoint_env0137680_ac027330.pkl",
+  "heldout": {
+    "steps": 527,
+    "actual_step_median_m": 22.115835189819336,
+    "absolute_decoder": {
+      "median_m": 218.3818359375,
+      "mean_m": 224.4213104248047
+    },
+    "constant_velocity": {
+      "median_m": 1.6597341299057007,
+      "mean_m": 2.710134744644165
+    }
+  },
+  "in_distribution_last_100_training_episodes": {
+    "steps": 8530,
+    "actual_step_median_m": 5.182099342346191,
+    "absolute_decoder": {
+      "median_m": 189.74465942382812,
+      "mean_m": 197.76962280273438
+    },
+    "constant_velocity": {
+      "median_m": 1.8247160911560059,
+      "mean_m": 2.7333712577819824
+    }
+  }
+}

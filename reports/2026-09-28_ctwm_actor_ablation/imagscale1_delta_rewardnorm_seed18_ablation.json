@@ -1,0 +1,44 @@
+{
+  "wrapper": "run_ablation.py",
+  "wrapper_sha256": "e491df6f6919e8608850fdc29d26e1d7cd18dee6df3bff329e03ac30d49c7cc5",
+  "patches_sha256": "7f1a636b7578c9f53e3d4f43ce81792a5be8c1c452938c6b39965cf8790286c5",
+  "changed": {
+    "ACConfig.imagination_scale": [
+      0.1,
+      1.0
+    ],
+    "world_model.delta_head_weight": [
+      null,
+      1.0
+    ],
+    "world_model.reward_head_normalised": [
+      false,
+      true
+    ]
+  },
+  "ac_config": {
+    "horizon": 15,
+    "starts": 32,
+    "units": 128,
+    "layers": 2,
+    "discount": 0.99,
+    "lambda_": 0.95,
+    "model_lr": 0.0003,
+    "actor_lr": 0.0001,
+    "critic_lr": 0.0001,
+    "clip": 100.0,
+    "imagination_scale": 1.0,
+    "parameter_grad_scale": 0.1,
+    "discrete_entropy": 0.03,
+    "parameter_entropy": 0.02,
+    "slow_update": 100
+  },
+  "trainer_args": [
+    "--output",
+    "outputs/mac_ablation_20260928/imagscale1_delta_rewardnorm_seed18",
+    "--steps",
+    "137680",
+    "--seed",
+    "18"
+  ]
+}

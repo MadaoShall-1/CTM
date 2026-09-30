@@ -1,0 +1,35 @@
+{
+  "before": {
+    "posterior_vector_rmse": 1.0100175142288208,
+    "prior_vector_rmse": 1.0494917631149292,
+    "posterior_reward_rmse": 0.8283117413520813,
+    "prior_reward_rmse": 0.7475060224533081,
+    "posterior_discount_bce": 0.6357449293136597,
+    "open_loop_1_vector_rmse": 1.0494916439056396,
+    "persistence_1_vector_rmse": 0.10785841196775436,
+    "open_loop_5_vector_rmse": 1.063291072845459,
+    "persistence_5_vector_rmse": 0.2636512219905853,
+    "open_loop_15_vector_rmse": 1.0338845252990723,
+    "persistence_15_vector_rmse": 0.4483916163444519
+  },
+  "after": {
+    "posterior_vector_rmse": 0.7865556478500366,
+    "prior_vector_rmse": 0.7874739766120911,
+    "posterior_reward_rmse": 0.4983541965484619,
+    "prior_reward_rmse": 0.5118000507354736,
+    "posterior_discount_bce": 0.11640212684869766,
+    "open_loop_1_vector_rmse": 0.7874739766120911,
+    "persistence_1_vector_rmse": 0.10785841196775436,
+    "open_loop_5_vector_rmse": 0.7926338315010071,
+    "persistence_5_vector_rmse": 0.2636512219905853,
+    "open_loop_15_vector_rmse": 0.7974016666412354,
+    "persistence_15_vector_rmse": 0.4483916163444519
+  },
+  "checkpoint_restore_verified": true,
+  "updates": 100,
+  "trainable_parameters": 356409,
+  "elapsed_seconds": 19.075472333002836,
+  "status": "completed",
+  "stop_reason": "updates",
+  "warning": "P2 engineering diagnostic only. Improvement does not establish a better policy or long-memory advantage."
+}

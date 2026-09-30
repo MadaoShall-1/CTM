@@ -1,0 +1,44 @@
+{
+  "wrapper": "run_ablation.py",
+  "wrapper_sha256": "d6e1786a2aff1e783ef450392491ed1ff36dcfe19fab1f35c07297a6c48de626",
+  "patches_sha256": "d82f8d6b5ff20a0a24cc3fc7e157f284ee046d4a1761a69d653293d9613ed2ab",
+  "changed": {
+    "ACConfig.imagination_scale": [
+      0.1,
+      1.0
+    ],
+    "world_model.delta_head_weight": [
+      null,
+      1.0
+    ],
+    "world_model.reward_head_twohot": [
+      false,
+      true
+    ]
+  },
+  "ac_config": {
+    "horizon": 15,
+    "starts": 32,
+    "units": 128,
+    "layers": 2,
+    "discount": 0.99,
+    "lambda_": 0.95,
+    "model_lr": 0.0003,
+    "actor_lr": 0.0001,
+    "critic_lr": 0.0001,
+    "clip": 100.0,
+    "imagination_scale": 1.0,
+    "parameter_grad_scale": 0.1,
+    "discrete_entropy": 0.03,
+    "parameter_entropy": 0.02,
+    "slow_update": 100
+  },
+  "trainer_args": [
+    "--output",
+    "outputs/mac_ablation_20260928/imagscale1_delta_twohot_seed17",
+    "--steps",
+    "137680",
+    "--seed",
+    "17"
+  ]
+}

@@ -1,0 +1,470 @@
+{
+  "ctwm_online_1h": {
+    "policy_episodes": 1540,
+    "last_quarter": {
+      "episodes": 385,
+      "start_m": 965.173669829926,
+      "end_m": 1023.8238724547547,
+      "progress_m": -58.650202624828786,
+      "progress_se_m": 13.477900335860017
+    },
+    "timeout_share": 0.7558441558441559,
+    "oob_share": 0.24415584415584415,
+    "timeout": {
+      "episodes": 291,
+      "start_m": 940.6887574081159,
+      "end_m": 969.1446806655307,
+      "progress_m": -28.455923257414828,
+      "progress_se_m": 15.293889649846244
+    },
+    "oob": {
+      "episodes": 94,
+      "start_m": 1040.9727072208486,
+      "end_m": 1193.09668958948,
+      "progress_m": -152.12398236863157,
+      "progress_se_m": 26.263549007955046
+    }
+  },
+  "imagscale1_seed17": {
+    "policy_episodes": 1580,
+    "last_quarter": {
+      "episodes": 395,
+      "start_m": 965.1264855107174,
+      "end_m": 1053.7407484996168,
+      "progress_m": -88.61426298889933,
+      "progress_se_m": 14.686916339896547
+    },
+    "timeout_share": 0.6734177215189874,
+    "oob_share": 0.3265822784810127,
+    "timeout": {
+      "episodes": 266,
+      "start_m": 930.2160104163607,
+      "end_m": 967.4430361296002,
+      "progress_m": -37.2270257132394,
+      "progress_se_m": 17.5829429428855
+    },
+    "oob": {
+      "episodes": 129,
+      "start_m": 1037.112426402957,
+      "end_m": 1231.6879693556202,
+      "progress_m": -194.57554295266323,
+      "progress_se_m": 24.14573776283494
+    }
+  },
+  "imagscale1_seed18": {
+    "policy_episodes": 1657,
+    "last_quarter": {
+      "episodes": 415,
+      "start_m": 932.5056474065207,
+      "end_m": 1043.9655755835843,
+      "progress_m": -111.45992817706373,
+      "progress_se_m": 12.41607024755133
+    },
+    "timeout_share": 0.6144578313253012,
+    "oob_share": 0.3855421686746988,
+    "timeout": {
+      "episodes": 255,
+      "start_m": 897.5026582605699,
+      "end_m": 967.6923104080499,
+      "progress_m": -70.18965214748009,
+      "progress_se_m": 15.122013528457513
+    },
+    "oob": {
+      "episodes": 160,
+      "start_m": 988.2916613578797,
+      "end_m": 1165.5260919570924,
+      "progress_m": -177.23443059921266,
+      "progress_se_m": 20.362472063333033
+    }
+  },
+  "imagscale1_rewardstd_seed17": {
+    "policy_episodes": 1554,
+    "last_quarter": {
+      "episodes": 390,
+      "start_m": 965.6321496816781,
+      "end_m": 1012.2878751705854,
+      "progress_m": -46.65572548890725,
+      "progress_se_m": 11.331769477548486
+    },
+    "timeout_share": 0.764102564102564,
+    "oob_share": 0.2358974358974359,
+    "timeout": {
+      "episodes": 298,
+      "start_m": 936.8911069831593,
+      "end_m": 953.6683661441675,
+      "progress_m": -16.777259161008285,
+      "progress_se_m": 12.566672100329429
+    },
+    "oob": {
+      "episodes": 92,
+      "start_m": 1058.7281358138375,
+      "end_m": 1202.1641109300697,
+      "progress_m": -143.43597511623216,
+      "progress_se_m": 22.86306493521562
+    }
+  },
+  "imagscale1_rewardstd_seed18": {
+    "policy_episodes": 1540,
+    "last_quarter": {
+      "episodes": 385,
+      "start_m": 950.6701838902064,
+      "end_m": 1019.4691411996816,
+      "progress_m": -68.7989573094752,
+      "progress_se_m": 13.027193449839311
+    },
+    "timeout_share": 0.7376623376623377,
+    "oob_share": 0.2623376623376623,
+    "timeout": {
+      "episodes": 284,
+      "start_m": 931.9406808665101,
+      "end_m": 969.5833270113233,
+      "progress_m": -37.64264614481321,
+      "progress_se_m": 15.138717606750046
+    },
+    "oob": {
+      "episodes": 101,
+      "start_m": 1003.3353211053527,
+      "end_m": 1159.742123669917,
+      "progress_m": -156.40680256456432,
+      "progress_se_m": 23.58680582472675
+    }
+  },
+  "imagscale1_delta_seed17": {
+    "policy_episodes": 1646,
+    "last_quarter": {
+      "episodes": 413,
+      "start_m": 956.9147748231311,
+      "end_m": 1076.841690950186,
+      "progress_m": -119.9269161270548,
+      "progress_se_m": 13.686765305639126
+    },
+    "timeout_share": 0.576271186440678,
+    "oob_share": 0.423728813559322,
+    "timeout": {
+      "episodes": 238,
+      "start_m": 887.8477068348092,
+      "end_m": 942.0846302449203,
+      "progress_m": -54.23692341011112,
+      "progress_se_m": 17.637177701736753
+    },
+    "oob": {
+      "episodes": 175,
+      "start_m": 1050.8459872872488,
+      "end_m": 1260.1112935093472,
+      "progress_m": -209.26530622209822,
+      "progress_se_m": 19.772882501769676
+    }
+  },
+  "imagscale1_delta_seed18": {
+    "policy_episodes": 1695,
+    "last_quarter": {
+      "episodes": 426,
+      "start_m": 934.6402503000179,
+      "end_m": 1042.9992724136569,
+      "progress_m": -108.35902211363886,
+      "progress_se_m": 14.413852937889558
+    },
+    "timeout_share": 0.5821596244131455,
+    "oob_share": 0.41784037558685444,
+    "timeout": {
+      "episodes": 248,
+      "start_m": 904.0070291334583,
+      "end_m": 923.5791652433334,
+      "progress_m": -19.572136109875096,
+      "progress_se_m": 18.893354574003574
+    },
+    "oob": {
+      "episodes": 178,
+      "start_m": 977.3202438354492,
+      "end_m": 1209.3823430779275,
+      "progress_m": -232.06209924247827,
+      "progress_se_m": 18.744707678994036
+    }
+  },
+  "imagscale1_delta_rewardnorm_seed17": {
+    "policy_episodes": 2344,
+    "last_quarter": {
+      "episodes": 586,
+      "start_m": 962.6335170081858,
+      "end_m": 1155.934789820336,
+      "progress_m": -193.30127281215005,
+      "progress_se_m": 13.428212093268845
+    },
+    "timeout_share": 0.05631399317406143,
+    "oob_share": 0.9436860068259386,
+    "timeout": {
+      "episodes": 33,
+      "start_m": 1140.2954452977035,
+      "end_m": 1092.0841841264205,
+      "progress_m": 48.21126117128314,
+      "progress_se_m": 97.76417216404555
+    },
+    "oob": {
+      "episodes": 553,
+      "start_m": 952.0316297865689,
+      "end_m": 1159.7450429630107,
+      "progress_m": -207.71341317644172,
+      "progress_se_m": 12.757510808662278
+    }
+  },
+  "imagscale1_delta_rewardnorm_seed18": {
+    "policy_episodes": 2225,
+    "last_quarter": {
+      "episodes": 557,
+      "start_m": 950.3939236105024,
+      "end_m": 1160.5578039638444,
+      "progress_m": -210.16388035334205,
+      "progress_se_m": 14.277988734163495
+    },
+    "timeout_share": 0.05565529622980251,
+    "oob_share": 0.9443447037701975,
+    "timeout": {
+      "episodes": 31,
+      "start_m": 828.9411955802672,
+      "end_m": 1084.2397677513861,
+      "progress_m": -255.29857217111896,
+      "progress_se_m": 115.23835595046181
+    },
+    "oob": {
+      "episodes": 526,
+      "start_m": 957.5517840077215,
+      "end_m": 1165.0556349953772,
+      "progress_m": -207.50385098765557,
+      "progress_se_m": 13.552020034009196
+    }
+  },
+  "imagscale1_delta_twohot_seed17": {
+    "policy_episodes": 1583,
+    "last_quarter": {
+      "episodes": 398,
+      "start_m": 965.7948440858468,
+      "end_m": 896.0334760004552,
+      "progress_m": 69.76136808539155,
+      "progress_se_m": 12.952196316357027
+    },
+    "timeout_share": 0.821608040201005,
+    "oob_share": 0.17839195979899497,
+    "timeout": {
+      "episodes": 327,
+      "start_m": 979.834355018919,
+      "end_m": 881.3258483373426,
+      "progress_m": 98.50850668157642,
+      "progress_se_m": 14.816889297552251
+    },
+    "oob": {
+      "episodes": 71,
+      "start_m": 901.1339979574714,
+      "end_m": 963.7714231249312,
+      "progress_m": -62.63742516745984,
+      "progress_se_m": 17.879219030745986
+    }
+  },
+  "imagscale1_delta_twohot_seed18": {
+    "policy_episodes": 1668,
+    "last_quarter": {
+      "episodes": 417,
+      "start_m": 931.8514246586129,
+      "end_m": 975.5669340138242,
+      "progress_m": -43.71550935521115,
+      "progress_se_m": 12.403536999969186
+    },
+    "timeout_share": 0.6618705035971223,
+    "oob_share": 0.3381294964028777,
+    "timeout": {
+      "episodes": 276,
+      "start_m": 938.9552052262901,
+      "end_m": 911.6771581898565,
+      "progress_m": 27.278047036433566,
+      "progress_se_m": 13.380872193891147
+    },
+    "oob": {
+      "episodes": 141,
+      "start_m": 917.9461520580535,
+      "end_m": 1100.6277717969097,
+      "progress_m": -182.6816197388561,
+      "progress_se_m": 21.334117367564964
+    }
+  },
+  "imagscale1_delta_twohot_edge_seed17": {
+    "policy_episodes": 1646,
+    "last_quarter": {
+      "episodes": 413,
+      "start_m": 956.9147748231311,
+      "end_m": 924.0577255322916,
+      "progress_m": 32.85704929083946,
+      "progress_se_m": 16.71223769289171
+    },
+    "timeout_share": 0.5980629539951574,
+    "oob_share": 0.4019370460048426,
+    "timeout": {
+      "episodes": 247,
+      "start_m": 984.8457359900841,
+      "end_m": 825.1619702234924,
+      "progress_m": 159.68376576659168,
+      "progress_se_m": 20.030865284369423
+    },
+    "oob": {
+      "episodes": 166,
+      "start_m": 915.3548506771225,
+      "end_m": 1071.209843371288,
+      "progress_m": -155.85499269416533,
+      "progress_se_m": 22.00258575688609
+    }
+  },
+  "imagscale1_delta_twohot_edge_seed18": {
+    "policy_episodes": 1621,
+    "last_quarter": {
+      "episodes": 406,
+      "start_m": 932.3018265898005,
+      "end_m": 932.4083873203823,
+      "progress_m": -0.10656073058180034,
+      "progress_se_m": 12.525435907113877
+    },
+    "timeout_share": 0.7315270935960592,
+    "oob_share": 0.2684729064039409,
+    "timeout": {
+      "episodes": 297,
+      "start_m": 929.1320243861137,
+      "end_m": 871.4574373290194,
+      "progress_m": 57.67458705709438,
+      "progress_se_m": 12.548519507143409
+    },
+    "oob": {
+      "episodes": 109,
+      "start_m": 940.9388105759926,
+      "end_m": 1098.4857464711602,
+      "progress_m": -157.54693589516737,
+      "progress_se_m": 26.489511995730762
+    }
+  },
+  "imagscale1_delta_twohot_edge_latent32_seed17": {
+    "policy_episodes": 1599,
+    "last_quarter": {
+      "episodes": 402,
+      "start_m": 963.1642780968206,
+      "end_m": 944.9923247531872,
+      "progress_m": 18.171953343633394,
+      "progress_se_m": 11.483773344964545
+    },
+    "timeout_share": 0.7412935323383084,
+    "oob_share": 0.25870646766169153,
+    "timeout": {
+      "episodes": 298,
+      "start_m": 969.4380592499804,
+      "end_m": 916.2928494447029,
+      "progress_m": 53.14520980527737,
+      "progress_se_m": 13.037561890162744
+    },
+    "oob": {
+      "episodes": 104,
+      "start_m": 945.1874821002667,
+      "end_m": 1027.2273597717285,
+      "progress_m": -82.03987767146184,
+      "progress_se_m": 21.181200439700113
+    }
+  },
+  "imagscale01_delta_twohot_edge_demo_seed17": {
+    "policy_episodes": 1707,
+    "last_quarter": {
+      "episodes": 429,
+      "start_m": 965.5018339001493,
+      "end_m": 455.10634392513816,
+      "progress_m": 510.3954899750112,
+      "progress_se_m": 24.02914332597457
+    },
+    "timeout_share": 0.7412587412587412,
+    "oob_share": 0.22144522144522144,
+    "timeout": {
+      "episodes": 318,
+      "start_m": 974.4285565742157,
+      "end_m": 439.1254789004536,
+      "progress_m": 535.3030776737621,
+      "progress_se_m": 28.0502881283543
+    },
+    "oob": {
+      "episodes": 95,
+      "start_m": 982.4322299354955,
+      "end_m": 570.3950849031147,
+      "progress_m": 412.03714503238075,
+      "progress_se_m": 51.607759415271445
+    }
+  },
+  "imagscale01_delta_twohot_edge_demo_seed18": {
+    "policy_episodes": 1703,
+    "last_quarter": {
+      "episodes": 428,
+      "start_m": 931.2605316661229,
+      "end_m": 427.0302794625826,
+      "progress_m": 504.23025220354026,
+      "progress_se_m": 24.083435042373726
+    },
+    "timeout_share": 0.8200934579439252,
+    "oob_share": 0.1191588785046729,
+    "timeout": {
+      "episodes": 351,
+      "start_m": 948.6650670586828,
+      "end_m": 431.00072335789343,
+      "progress_m": 517.6643437007893,
+      "progress_se_m": 27.555512543606397
+    },
+    "oob": {
+      "episodes": 51,
+      "start_m": 964.4520269655713,
+      "end_m": 571.1532333972407,
+      "progress_m": 393.29879356833067,
+      "progress_se_m": 58.57778061120366
+    }
+  },
+  "imagscale0_delta_twohot_edge_demo_seed17": {
+    "policy_episodes": 1718,
+    "last_quarter": {
+      "episodes": 431,
+      "start_m": 966.3189588223698,
+      "end_m": 515.8376549634469,
+      "progress_m": 450.48130385892296,
+      "progress_se_m": 24.78220683137158
+    },
+    "timeout_share": 0.6937354988399071,
+    "oob_share": 0.2853828306264501,
+    "timeout": {
+      "episodes": 299,
+      "start_m": 956.6429345886843,
+      "end_m": 499.8997536853803,
+      "progress_m": 456.743180903304,
+      "progress_se_m": 29.46080133667437
+    },
+    "oob": {
+      "episodes": 123,
+      "start_m": 1005.8591412800114,
+      "end_m": 585.9279645594155,
+      "progress_m": 419.93117672059594,
+      "progress_se_m": 47.47279325551129
+    }
+  },
+  "imagscale0_delta_twohot_edge_demo_seed18": {
+    "policy_episodes": 1758,
+    "last_quarter": {
+      "episodes": 441,
+      "start_m": 945.3991149417938,
+      "end_m": 451.2959075028123,
+      "progress_m": 494.1032074389814,
+      "progress_se_m": 22.708318484677314
+    },
+    "timeout_share": 0.7959183673469388,
+    "oob_share": 0.17687074829931973,
+    "timeout": {
+      "episodes": 351,
+      "start_m": 942.781666204121,
+      "end_m": 438.3806417742346,
+      "progress_m": 504.40102442988643,
+      "progress_se_m": 25.44403493322232
+    },
+    "oob": {
+      "episodes": 78,
+      "start_m": 994.0776570638021,
+      "end_m": 564.1627342028496,
+      "progress_m": 429.9149228609525,
+      "progress_se_m": 56.39122528862949
+    }
+  }
+}

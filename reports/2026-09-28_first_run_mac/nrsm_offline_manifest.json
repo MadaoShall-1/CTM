@@ -1,0 +1,46 @@
+{
+  "config": {
+    "neurons": 64,
+    "memory": 8,
+    "ticks": 2,
+    "sync_neurons": 16,
+    "context": 128,
+    "hidden": 128,
+    "nlm_hidden": 8,
+    "stoch": 8,
+    "classes": 8,
+    "embed": 128,
+    "deep_nlms": true,
+    "nlm_norm": true,
+    "synapse_depth": 1
+  },
+  "core_contract": "nrsm_v2_ctm_rl_4a6c9c3_shared_context_fp32",
+  "upstream_revision": "4a6c9c3a7fb5dc4bca6381cc7883a3b9252c6466",
+  "reference_torch_version": "2.7.0+cpu",
+  "args": {
+    "output": "outputs/mac_first_run_20260928/nrsm_offline_100updates",
+    "updates": 100,
+    "train_episodes": 16,
+    "eval_episodes": 8,
+    "batch": 2,
+    "seed": 17,
+    "duration_seconds": 0
+  },
+  "source_sha256": {
+    "nrsm.py": "ab8453ea4eb90ab22de0308594c6374cb69e23da693439449ff858767de9daee",
+    "ctm_rl_core.py": "e4db68d080c1ca35961d61a6b0945bdb7b80aa2dff6914b4dd5bb8024894b743",
+    "validate_nrsm.py": "23c4d642630c280734874ab300e9fd420b74c0ea3ff57d083e4d4f497e21eb9e",
+    "models.py": "61f57921e50f667418634283e78ee1bc2560f9b0bff5d5b73862ee2aa177ded5",
+    "tools.py": "50c0f4119b095b33e4d0e79e532bc561db3daff6e6aa3096dc76e61e80477228",
+    "envs.py": "8452624ce7110bc152445912a6c3095f9cee3e33dce9492ec1cb45430b1f1531",
+    "uav_actions.py": "9e009504330b0030dca84b2109bb8880bebccf4fb119f3b7bc0eda015e9dd7cc",
+    "controller_baseline.py": "c970d5f92f2b8d00880aac62d249d354201752e388faccad6f74fd27d1c183ec",
+    "run_support.py": "8eddfe43e69e2efe100ecfcb93f57a771221ff6184ee22c82b847e174cb8b282"
+  },
+  "tensorflow": "2.21.0",
+  "gpu": [],
+  "evaluation": "categorical argmax, normalized vector RMSE; not Monte Carlo expectation",
+  "environment": "unchanged relay/goal_safe_v1, horizon=100, discount=.99, shaping=1",
+  "objective": "10*vector Gaussian NLL + reward Gaussian NLL + discount BCE + balanced KL (.8/free0)",
+  "limitations": "Compact profile, offline diagnostic, no Actor, no task performance claim; TF RNG not bit-exact resumable"
+}

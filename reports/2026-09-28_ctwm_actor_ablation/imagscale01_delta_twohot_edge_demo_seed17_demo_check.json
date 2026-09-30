@@ -1,0 +1,20 @@
+{
+  "checkpoint": "checkpoint_env0137680_ac027330.pkl",
+  "demonstrations": 64,
+  "steps": 3829,
+  "delivery": {
+    "actual_mean": 1.0025317668914795,
+    "predicted_mean": 0.48028838634490967,
+    "reward_share": 0.47907549142837524,
+    "end_prob_mean": 0.4297494888305664
+  },
+  "imitation": {
+    "discrete_agreement": 0.9919038913554453,
+    "balanced_agreement": 0.9594167955504701,
+    "move_step_agreement": 0.997191800056164,
+    "turn_step_agreement": 0.9216417910447762,
+    "controller_move_share": 0.9300078349438495,
+    "actor_move_share": 0.9328806476886916,
+    "parameter_mae": 0.09073486924171448
+  }
+}

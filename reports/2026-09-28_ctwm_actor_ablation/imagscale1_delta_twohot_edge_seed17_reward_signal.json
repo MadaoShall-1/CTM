@@ -1,0 +1,30 @@
+{
+  "checkpoint": "checkpoint_env0137680_ac027330.pkl",
+  "in_distribution_last_100_training_episodes": {
+    "steps": 7075,
+    "actual_mean": -0.00688337255269289,
+    "actual_std": 0.0015683539677411318,
+    "posterior_rmse": 0.02635202556848526,
+    "posterior_corr": 0.24191211132363086,
+    "prior_rmse": 0.028663858771324158,
+    "prior_corr": 0.23536645934270406
+  },
+  "heldout_controller": {
+    "steps": 262,
+    "actual_mean": -0.0027886738535016775,
+    "actual_std": 0.002823533257469535,
+    "posterior_rmse": 0.0160849429666996,
+    "posterior_corr": 0.11272514910720086,
+    "prior_rmse": 0.020130371674895287,
+    "prior_corr": 0.07630743905073277
+  },
+  "heldout_random": {
+    "steps": 265,
+    "actual_mean": -0.008254829794168472,
+    "actual_std": 0.0016704098088666797,
+    "posterior_rmse": 0.034140054136514664,
+    "posterior_corr": 0.15930147330014957,
+    "prior_rmse": 0.04471741244196892,
+    "prior_corr": 0.06034738172023797
+  }
+}

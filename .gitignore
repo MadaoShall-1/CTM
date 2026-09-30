@@ -4,7 +4,9 @@
 **/*.py[cod]
 **/*.egg-info/
 .venv/
+.venv-*/
 venv/
+venvs/
 
 # Training/evaluation artifacts (large and reproducible)
 **/outputs/

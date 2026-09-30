@@ -1,0 +1,35 @@
+{
+  "wrapper": "run_ablation.py",
+  "wrapper_sha256": "4b68544f1517af97f69ed2c91896e73a9271f9a5506a6235a5fd3dc0edc88ede",
+  "changed": {
+    "ACConfig.imagination_scale": [
+      0.1,
+      1.0
+    ]
+  },
+  "ac_config": {
+    "horizon": 15,
+    "starts": 32,
+    "units": 128,
+    "layers": 2,
+    "discount": 0.99,
+    "lambda_": 0.95,
+    "model_lr": 0.0003,
+    "actor_lr": 0.0001,
+    "critic_lr": 0.0001,
+    "clip": 100.0,
+    "imagination_scale": 1.0,
+    "parameter_grad_scale": 0.1,
+    "discrete_entropy": 0.03,
+    "parameter_entropy": 0.02,
+    "slow_update": 100
+  },
+  "trainer_args": [
+    "--output",
+    "outputs/mac_ablation_20260928/imagscale1_seed18",
+    "--steps",
+    "137680",
+    "--seed",
+    "18"
+  ]
+}

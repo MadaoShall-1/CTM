@@ -1,0 +1,202 @@
+[
+  {
+    "update": 0,
+    "heldout": {
+      "posterior_vector_rmse": 1.0100175142288208,
+      "prior_vector_rmse": 1.0494917631149292,
+      "posterior_reward_rmse": 0.8283117413520813,
+      "prior_reward_rmse": 0.7475060224533081,
+      "posterior_discount_bce": 0.6357449293136597,
+      "open_loop_1_vector_rmse": 1.0494916439056396,
+      "persistence_1_vector_rmse": 0.10785841196775436,
+      "open_loop_5_vector_rmse": 1.063291072845459,
+      "persistence_5_vector_rmse": 0.2636512219905853,
+      "open_loop_15_vector_rmse": 1.0338845252990723,
+      "persistence_15_vector_rmse": 0.4483916163444519
+    }
+  },
+  {
+    "update": 10,
+    "elapsed_seconds": 4.962975625006948,
+    "train": {
+      "loss": 160.1331787109375,
+      "kl": 0.26267209649086,
+      "vector_nll": 15.866272926330566,
+      "reward_nll": 1.0155612230300903,
+      "discount_bce": 0.19220863282680511,
+      "gradient_norm": 2377548.0,
+      "gradient_norm_window_max": 23513282.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 20,
+    "elapsed_seconds": 5.951696916017681,
+    "train": {
+      "loss": 151.14700317382812,
+      "kl": 0.21360251307487488,
+      "vector_nll": 14.977434158325195,
+      "reward_nll": 1.0398029088974,
+      "discount_bce": 0.11925258487462997,
+      "gradient_norm": 1891206.125,
+      "gradient_norm_window_max": 18772138.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 30,
+    "elapsed_seconds": 6.9602390410145745,
+    "train": {
+      "loss": 155.73321533203125,
+      "kl": 0.18261376023292542,
+      "vector_nll": 15.445050239562988,
+      "reward_nll": 0.9818249940872192,
+      "discount_bce": 0.11826934665441513,
+      "gradient_norm": 30598.296875,
+      "gradient_norm_window_max": 963214656.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 40,
+    "elapsed_seconds": 7.956789541000035,
+    "train": {
+      "loss": 154.69662475585938,
+      "kl": 0.1327376812696457,
+      "vector_nll": 15.348384857177734,
+      "reward_nll": 0.9782688021659851,
+      "discount_bce": 0.10175978392362595,
+      "gradient_norm": 10258329.0,
+      "gradient_norm_window_max": 385067328.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 50,
+    "elapsed_seconds": 8.954367749975063,
+    "train": {
+      "loss": 146.5623016357422,
+      "kl": 0.11613227427005768,
+      "vector_nll": 14.5216646194458,
+      "reward_nll": 1.1056292057037354,
+      "discount_bce": 0.12390171736478806,
+      "gradient_norm": 39781.94140625,
+      "gradient_norm_window_max": 5743128.0,
+      "clipped_fraction": 1.0
+    },
+    "heldout": {
+      "posterior_vector_rmse": 0.6637163758277893,
+      "prior_vector_rmse": 0.6741463541984558,
+      "posterior_reward_rmse": 0.700066328048706,
+      "prior_reward_rmse": 0.6885172128677368,
+      "posterior_discount_bce": 0.12199996411800385,
+      "open_loop_1_vector_rmse": 0.6741463541984558,
+      "persistence_1_vector_rmse": 0.10785841196775436,
+      "open_loop_5_vector_rmse": 0.6801611185073853,
+      "persistence_5_vector_rmse": 0.2636512219905853,
+      "open_loop_15_vector_rmse": 0.6801797151565552,
+      "persistence_15_vector_rmse": 0.4483916163444519
+    }
+  },
+  {
+    "update": 60,
+    "elapsed_seconds": 11.241210207983386,
+    "train": {
+      "loss": 152.8612823486328,
+      "kl": 0.10106521099805832,
+      "vector_nll": 15.162300109863281,
+      "reward_nll": 1.0392272472381592,
+      "discount_bce": 0.09799255430698395,
+      "gradient_norm": 6372790.5,
+      "gradient_norm_window_max": 150416640.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 70,
+    "elapsed_seconds": 12.269916415971238,
+    "train": {
+      "loss": 143.82635498046875,
+      "kl": 0.06855747848749161,
+      "vector_nll": 14.243193626403809,
+      "reward_nll": 1.2103310823440552,
+      "discount_bce": 0.11554199457168579,
+      "gradient_norm": 966.3270874023438,
+      "gradient_norm_window_max": 12904202.0,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 80,
+    "elapsed_seconds": 13.278707332967315,
+    "train": {
+      "loss": 145.24557495117188,
+      "kl": 0.06382178515195847,
+      "vector_nll": 14.4076509475708,
+      "reward_nll": 1.0037541389465332,
+      "discount_bce": 0.10149584710597992,
+      "gradient_norm": 15656.9111328125,
+      "gradient_norm_window_max": 15656.9111328125,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 90,
+    "elapsed_seconds": 14.291722957976162,
+    "train": {
+      "loss": 145.69378662109375,
+      "kl": 0.08386822789907455,
+      "vector_nll": 14.453393936157227,
+      "reward_nll": 0.964144766330719,
+      "discount_bce": 0.11184173077344894,
+      "gradient_norm": 2392966.5,
+      "gradient_norm_window_max": 2392966.5,
+      "clipped_fraction": 1.0
+    }
+  },
+  {
+    "update": 100,
+    "elapsed_seconds": 15.32396762497956,
+    "train": {
+      "loss": 147.82711791992188,
+      "kl": 0.05936235189437866,
+      "vector_nll": 14.666219711303711,
+      "reward_nll": 0.9917025566101074,
+      "discount_bce": 0.11385756731033325,
+      "gradient_norm": 4447.70703125,
+      "gradient_norm_window_max": 2329128.25,
+      "clipped_fraction": 1.0
+    },
+    "heldout": {
+      "posterior_vector_rmse": 0.7865556478500366,
+      "prior_vector_rmse": 0.7874739766120911,
+      "posterior_reward_rmse": 0.4983541965484619,
+      "prior_reward_rmse": 0.5118000507354736,
+      "posterior_discount_bce": 0.11640212684869766,
+      "open_loop_1_vector_rmse": 0.7874739766120911,
+      "persistence_1_vector_rmse": 0.10785841196775436,
+      "open_loop_5_vector_rmse": 0.7926338315010071,
+      "persistence_5_vector_rmse": 0.2636512219905853,
+      "open_loop_15_vector_rmse": 0.7974016666412354,
+      "persistence_15_vector_rmse": 0.4483916163444519
+    }
+  },
+  {
+    "update": 100,
+    "elapsed_seconds": 17.761014457966667,
+    "heldout": {
+      "posterior_vector_rmse": 0.7865556478500366,
+      "prior_vector_rmse": 0.7874739766120911,
+      "posterior_reward_rmse": 0.4983541965484619,
+      "prior_reward_rmse": 0.5118000507354736,
+      "posterior_discount_bce": 0.11640212684869766,
+      "open_loop_1_vector_rmse": 0.7874739766120911,
+      "persistence_1_vector_rmse": 0.10785841196775436,
+      "open_loop_5_vector_rmse": 0.7926338315010071,
+      "persistence_5_vector_rmse": 0.2636512219905853,
+      "open_loop_15_vector_rmse": 0.7974016666412354,
+      "persistence_15_vector_rmse": 0.4483916163444519
+    },
+    "final": true
+  }
+]

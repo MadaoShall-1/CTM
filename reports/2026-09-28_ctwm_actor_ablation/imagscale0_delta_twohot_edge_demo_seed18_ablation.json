@@ -1,0 +1,57 @@
+{
+  "wrapper": "run_ablation.py",
+  "wrapper_sha256": "2983c1b773761911f8b41384ee1950348808a5453520c35af7dc15bf68d96830",
+  "patches_sha256": "22d5c47ee89299198d7998fcec15d5dcf6b8eed95ab08ae978e8503883941090",
+  "changed": {
+    "ACConfig.imagination_scale": [
+      0.1,
+      0.0
+    ],
+    "world_model.delta_head_weight": [
+      null,
+      1.0
+    ],
+    "world_model.reward_head_twohot": [
+      false,
+      true
+    ],
+    "world_model.edge_head_weight": [
+      null,
+      1.0
+    ],
+    "training.dreamerv2_demonstrations": [
+      null,
+      {
+        "episodes": 64,
+        "seed_start": 30000,
+        "bc_scale": 5.0,
+        "world_model_share": 0.1135
+      }
+    ]
+  },
+  "ac_config": {
+    "horizon": 15,
+    "starts": 32,
+    "units": 128,
+    "layers": 2,
+    "discount": 0.99,
+    "lambda_": 0.95,
+    "model_lr": 0.0003,
+    "actor_lr": 0.0001,
+    "critic_lr": 0.0001,
+    "clip": 100.0,
+    "imagination_scale": 0.0,
+    "parameter_grad_scale": 0.1,
+    "discrete_entropy": 0.03,
+    "parameter_entropy": 0.02,
+    "slow_update": 100
+  },
+  "trainer_args": [
+    "--output",
+    "outputs/mac_ablation_20260928/imagscale0_delta_twohot_edge_demo_seed18",
+    "--steps",
+    "137680",
+    "--seed",
+    "18"
+  ]
+}
